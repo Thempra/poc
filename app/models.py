@@ -1,41 +1,56 @@
-# app/models.py
-from sqlalchemy import Column, String, Integer, Float, Text, TIMESTAMP, UUID, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, Integer, Float, TIMESTAMP, ForeignKey, UUID, Boolean
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
+from uuid import uuid4
 from datetime import datetime
 
 Base = declarative_base()
 
+def generate_uuid():
+    return str(uuid4())
+
 class Call(Base):
     __tablename__ = "calls"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
-    call_id = Column(String(255), unique=True, index=True)
-    name = Column(String(500))
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    call_id = Column(String(255), unique=True, index=True, nullable=False)
+    name = Column(String(500), nullable=False)
     sector = Column(String(200))
-    description = Column(Text)
-    url = Column(String(1000))
+    description = Column(TEXT)
+    url = Column(String(1000), nullable=False)
     total_funding = Column(Float)
     funding_percentage = Column(Float)
     max_per_company = Column(Float)
-    deadline = Column(TIMESTAMP)
-    processing_status = Column(String(50))
-    analysis_status = Column(String(50))
+    deadline = Column(TIMESTAMP(timezone=True))
+    processing_status = Column(String(50), default='Pending')
+    analysis_status = Column(String(50), default='Pending')
     relevance_score = Column(Float)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
-    updated_at = Column(TIMESTAMP, onupdate=datetime.utcnow)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), onupdate=func.now())
 
 class Task(Base):
     __tablename__ = "tasks"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    call_id = Column(String(255), ForeignKey("calls.call_id"), nullable=False)
+    task_type = Column(String(100), nullable=False)
+    status = Column(String(50), default='Pending')
+    data = Column(JSONB)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), onupdate=func.now())
 
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
-    task_id = Column(String(255), unique=True, index=True)
-    description = Column(Text)
-    status = Column(String(50))
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
-    updated_at = Column(TIMESTAMP, onupdate=datetime.utcnow)
+    call = relationship("Call", backref=backref("tasks", lazy="dynamic"))
 
-    call_id = Column(UUID(as_uuid=True), ForeignKey("calls.id"))
-    call = relationship("Call", back_populates="tasks")
+class Analysis(Base):
+    __tablename__ = "analyses"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    call_id = Column(String(255), ForeignKey("calls.call_id"), nullable=False)
+    analysis_type = Column(String(100), nullable=False)
+    results = Column(JSONB)
+    status = Column(String(50), default='Pending')
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), onupdate=func.now())
 
-Call.tasks = relationship("Task", order_by=Task.id, back_populates="call")
+    call = relationship("Call", backref=backref("analyses", lazy="dynamic"))
