@@ -2,69 +2,49 @@
   "project_name": "Call for Tenders",
   "main_features": [
     {
-      "feature_name": "Adminer Integration",
-      "description": "Manage PostgreSQL database through a web-based interface.",
-      "priority": "High"
+      "name": "Web Scraping Engine",
+      "description": "Scrapes the index of EU funding opportunities and extracts detailed data about each call."
     },
     {
-      "feature_name": "Database Models",
-      "description": "Define data models for tasks using SQLAlchemy.",
-      "priority": "High"
+      "name": "Database Management",
+      "description": "Manages a PostgreSQL database to store and retrieve convocation data efficiently."
     },
     {
-      "feature_name": "API Endpoints",
-      "description": "Provide REST API endpoints to manage Call for Tenders data.",
-      "priority": "High"
+      "name": "API Endpoints",
+      "description": "Provides RESTful API endpoints for accessing and manipulating convocation data."
     },
     {
-      "feature_name": "Dashboard",
-      "description": "Create a dashboard to monitor and analyze Call for Tenders data.",
-      "priority": "Medium"
-    },
-    {
-      "feature_name": "Web Scraping",
-      "description": "Scrape the index of EU calls for proposals using Scrapy framework.",
-      "priority": "High"
+      "name": "Dashboard",
+      "description": "Displays real-time status, scraping statistics, and a list of relevant convocations."
     }
   ],
   "technical_stack": [
     {
-      "technology": "FastAPI",
-      "version": "1.0.0",
-      "description": "Web framework for building APIs."
+      "name": "Framework",
+      "details": "FastAPI"
     },
     {
-      "technology": "SQLAlchemy",
-      "version": "Latest",
-      "description": "Object-relational mapping (ORM) library for Python."
+      "name": "Database",
+      "details": "PostgreSQL"
     },
     {
-      "technology": "Scrapy",
-      "version": "Latest",
-      "description": "Framework for extracting data from websites using a simple and scalable architecture."
+      "name": "Web Scraping Framework",
+      "details": "Scrapy"
     },
     {
-      "technology": "Docker",
-      "version": "Latest",
-      "description": "Containerization platform."
-    },
-    {
-      "technology": "Adminer",
-      "version": "Latest",
-      "description": "Web-based database administration tool."
+      "name": "Orchestration",
+      "details": "Docker Compose"
     }
   ],
   "priority_order": [
-    "High: Adminer Integration",
-    "High: Database Models",
-    "High: Web Scraping",
-    "High: API Endpoints",
-    "Medium: Dashboard"
+    "Database Management",
+    "Web Scraping Engine",
+    "API Endpoints",
+    "Dashboard"
   ],
-  "corrective_actions": {
-    "validation_error": {
-      "description": "The error is due to the 'declarative_base' function not being imported.",
-      "solution": "Import 'Base' from 'sqlalchemy.ext.declarative' at the beginning of 'app/models.py'."
+  "corrective_actions": [
+    {
+      "description": "Fix the import error in app/main.py by ensuring all dependencies are correctly installed and referenced."
     }
-  }
+  ]
 }
