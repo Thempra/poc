@@ -2,40 +2,69 @@
   "project_name": "Call for Tenders",
   "main_features": [
     {
-      "name": "Web Scraping Engine",
-      "description": "Scrapes the EU's index of tender opportunities, extracts details, and updates the database with new calls."
+      "feature_name": "Adminer Integration",
+      "description": "Manage PostgreSQL database through a web-based interface.",
+      "priority": "High"
     },
     {
-      "name": "Dashboard",
-      "description": "Provides a real-time monitoring dashboard for system status, scraping statistics, and tender results with pagination and responsive design."
+      "feature_name": "Database Models",
+      "description": "Define data models for tasks using SQLAlchemy.",
+      "priority": "High"
+    },
+    {
+      "feature_name": "API Endpoints",
+      "description": "Provide REST API endpoints to manage Call for Tenders data.",
+      "priority": "High"
+    },
+    {
+      "feature_name": "Dashboard",
+      "description": "Create a dashboard to monitor and analyze Call for Tenders data.",
+      "priority": "Medium"
+    },
+    {
+      "feature_name": "Web Scraping",
+      "description": "Scrape the index of EU calls for proposals using Scrapy framework.",
+      "priority": "High"
     }
   ],
   "technical_stack": [
     {
-      "name": "Framework",
-      "details": "FastAPI"
+      "technology": "FastAPI",
+      "version": "1.0.0",
+      "description": "Web framework for building APIs."
     },
     {
-      "name": "Database",
-      "details": "PostgreSQL (configured with Adminer)"
+      "technology": "SQLAlchemy",
+      "version": "Latest",
+      "description": "Object-relational mapping (ORM) library for Python."
     },
     {
-      "name": "Scraping Library",
-      "details": "Scrapy, aiohttp, BeautifulSoup"
+      "technology": "Scrapy",
+      "version": "Latest",
+      "description": "Framework for extracting data from websites using a simple and scalable architecture."
     },
     {
-      "name": "Middleware",
-      "details": "Custom middlewares for handling JavaScript-based applications and retry logic with exponential backoff"
+      "technology": "Docker",
+      "version": "Latest",
+      "description": "Containerization platform."
+    },
+    {
+      "technology": "Adminer",
+      "version": "Latest",
+      "description": "Web-based database administration tool."
     }
   ],
   "priority_order": [
-    "Web Scraping Engine (highest priority as it populates the database)",
-    "Dashboard (second highest, provides real-time monitoring of scraping and data updates)"
+    "High: Adminer Integration",
+    "High: Database Models",
+    "High: Web Scraping",
+    "High: API Endpoints",
+    "Medium: Dashboard"
   ],
   "corrective_actions": {
-    "ImportError": {
-      "description": "The 'Task' model was not imported correctly in 'app/crud.py'.",
-      "solution": "Ensure that the correct import statement for 'Task' is included at the top of 'app/crud.py', e.g., from app.models import Task."
+    "validation_error": {
+      "description": "The error is due to the 'declarative_base' function not being imported.",
+      "solution": "Import 'Base' from 'sqlalchemy.ext.declarative' at the beginning of 'app/models.py'."
     }
   }
 }
