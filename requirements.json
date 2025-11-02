@@ -3,38 +3,41 @@
   "main_features": [
     {
       "name": "Web Scraping Engine",
-      "description": "Scrapes the EU's index of calls for proposals, extracts details, and validates URLs."
+      "description": "Scrapes the EU's index of tenders to extract basic information and detailed PDFs."
     },
     {
-      "name": "Database Management",
-      "description": "Manages a PostgreSQL database to store call data and handles CRUD operations."
-    },
-    {
-      "name": "API Endpoint for Retrieval",
-      "description": "Provides an API endpoint to retrieve call data in JSON format."
+      "name": "Adminer Integration",
+      "description": "Provides a web-based interface for managing the PostgreSQL database of tender calls."
     },
     {
       "name": "Dashboard",
-      "description": "Displays real-time system status, scraping statistics, and analyzed call results with pagination."
+      "description": "Displays real-time system status, scraping statistics, and tender analysis results with pagination and auto-update features."
     }
   ],
   "technical_stack": [
-    "FastAPI",
-    "SQLAlchemy",
-    "Scrapy",
-    "PostgreSQL",
-    "Docker"
+    {
+      "language": "Python",
+      "frameworks": ["FastAPI", "Scrapy"],
+      "databases": ["PostgreSQL"]
+    },
+    {
+      "library": "SQLAlchemy",
+      "purpose": "Database ORM"
+    },
+    {
+      "tool": "Docker Compose",
+      "purpose": "Container orchestration for development environment"
+    }
   ],
   "priority_order": [
-    "Database Management",
     "Web Scraping Engine",
-    "Dashboard",
-    "API Endpoint for Retrieval"
+    "Adminer Integration",
+    "Dashboard"
   ],
   "corrective_actions": [
     {
-      "error_description": "Validation Error: ImportError: cannot import name 'CallCreate' from 'app.schemas'",
-      "action": "Ensure that the `schemas.py` file exists and contains the correct definitions for `CallCreate` and `CallUpdate`. Verify imports in `tasks.py`."
+      "issue": "NameError: name 'declarative_base' is not defined",
+      "solution": "Import declarative_base from SQLAlchemy in the models.py file."
     }
   ]
 }
