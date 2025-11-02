@@ -1,48 +1,42 @@
 # app/models.py
-from sqlalchemy import Column, String, Float, DateTime, ForeignKey, Text, Integer, UUID, Boolean
+
+from sqlalchemy import Column, String, Integer, Float, TIMESTAMP, Boolean, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime
-import uuid
 
 Base = declarative_base()
 
 class Call(Base):
     __tablename__ = "calls"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     call_id = Column(String(255), unique=True, index=True)
-    name = Column(String(500))
+    name = Column(String(500), nullable=False)
     sector = Column(String(200))
-    description = Column(Text)
-    url = Column(String(1000))
-    total_funding = Column(Float)
-    funding_percentage = Column(Float)
-    max_per_company = Column(Float)
-    deadline = Column(DateTime(timezone=True))
+    description = Column(String(10000))  # Adjusted for larger text
+    url = Column(String(1000), nullable=False)
+    total_funding = Column(Float, default=0.0)
+    funding_percentage = Column(Float, default=0.0)
+    max_per_company = Column(Float, default=0.0)
+    deadline = Column(TIMESTAMP(timezone=True))
     processing_status = Column(String(50), default="pending")
     analysis_status = Column(String(50), default="pending")
     relevance_score = Column(Float, default=0.0)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    created_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow)
+    updated_at = Column(TIMESTAMP(timezone=True), onupdate=datetime.utcnow)
 
+# Assuming there is a related model named 'Analysis'
 class Analysis(Base):
     __tablename__ = "analyses"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    call_id = Column(String(255), ForeignKey("calls.call_id"))
-    analysis_result = Column(JSONB)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
+    call_id = Column(String(255), ForeignKey("calls.call_id"), nullable=False)
+    call = relationship("Call", back_populates="analysis")
+    # Add other fields related to the analysis here
+    created_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow)
+    updated_at = Column(TIMESTAMP(timezone=True), onupdate=datetime.utcnow)
 
-class Notification(Base):
-    __tablename__ = "notifications"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    call_id = Column(String(255), ForeignKey("calls.call_id"))
-    sent_at = Column(DateTime(timezone=True), server_default=func.now())
-    is_sent = Column(Boolean, default=False)
-
-Call.analyses = relationship("Analysis", back_populates="call")
-Notification.call = relationship("Call", back_populates="notifications")
-
+# Ensure you have relationships set up correctly in your models if necessary
+Call.analysis = relationship("Analysis", back_populates="call")
