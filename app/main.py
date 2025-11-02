@@ -1,55 +1,49 @@
 # app/main.py
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Security
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from app.database import engine, SessionLocal, get_db
 from app.routers.tasks import router as tasks_router
+from app.models import Call
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Call for Tenders API",
-    description="API for managing Call for Tenders data.",
+    description="A RESTful API for managing tenders from the EU",
     version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
+    contact={
+        "name": "Your Name",
+        "email": "your.email@example.com"
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT"
+    }
 )
-
-# Permissive CORS configuration
-origins = [
-    "http://localhost",
-    "http://localhost:8080",
-]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get("/", tags=["health"])
-def read_root():
-    return {"message": "Call for Tenders API is running"}
+# Health check endpoint
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
 
-# Database dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-app.include_router(tasks_router, prefix="/tasks", tags=["tasks"])
+# Router imports from app.routers.tasks
+app.include_router(tasks_router, prefix="/tasks", tags=["Tasks"])
 
 @app.on_event("startup")
-async def startup():
-    # Perform any startup tasks here
-    pass
+async def startup_db_client():
+    # Initialize database here if needed
 
 @app.on_event("shutdown")
-async def shutdown():
-    # Perform any cleanup tasks here
-    pass
+async def shutdown_db_client():
+    # Close database connection here if needed
+
