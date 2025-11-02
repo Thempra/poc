@@ -3,34 +3,29 @@
   "main_features": [
     {
       "name": "Web Scraping Engine",
-      "description": "Scrapes convocatorias de la UE, extracts data, and updates the database."
+      "description": "Scrapes the index of EU funding tenders, extracts PDF links, and validates URLs."
     },
     {
       "name": "Dashboard",
-      "description": "Monitors system status, displays statistics, shows results of convocation analysis, and provides direct links to recommended tenders."
+      "description": "Monitors system status, provides scraping statistics, displays tender results with pagination, and offers automatic updates."
     }
   ],
   "technical_stack": [
-    "FastAPI",
-    "Scrapy (without Selenium)",
-    "PostgreSQL",
-    "SQLAlchemy",
-    "Docker Compose"
+    "FastAPI for the API",
+    "Scrapy for web scraping",
+    "SQLAlchemy ORM for database management",
+    "PostgreSQL as the database",
+    "Docker for containerization"
   ],
   "priority_order": [
-    {
-      "feature": "Web Scraping Engine",
-      "priority": "High"
-    },
-    {
-      "feature": "Dashboard",
-      "priority": "Medium"
-    }
+    "Implement web scraping engine to gather tender data",
+    "Develop API endpoints to expose scraped data",
+    "Create a user-friendly dashboard for monitoring and displaying results"
   ],
-  "corrective_actions": [
-    {
-      "error": "IndentationError",
-      "solution": "Ensure all code blocks within functions are indented properly."
+  "corrective_actions": {
+    "validation_error": {
+      "description": "Error in models.py due to the use of 'func' which is not defined.",
+      "solution": "Import 'func' from sqlalchemy import func at the beginning of models.py."
     }
-  ]
+  }
 }
