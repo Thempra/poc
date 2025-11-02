@@ -1,114 +1,86 @@
-# Style Guide for the Task Management App
+# UI/UX Guidelines for the Call Management System
 
-## Overview
+## Introduction
 
-This style guide provides a comprehensive set of guidelines to ensure consistency and quality in the user interface (UI) and user experience (UX) of the task management app. The guidelines are designed to improve usability, readability, and overall aesthetic appeal.
+This document outlines the user interface and experience (UI/UX) guidelines for our Call Management System. These guidelines are designed to ensure a consistent, intuitive, and engaging user experience across all parts of the application.
 
 ## Color Scheme
 
-### Palette
-- **Primary Blue**: #007BFF - Used for primary actions, navigation, and accents.
-- **Secondary Gray**: #6C757D - Used for background elements, dividers, and less important text.
-- **Success Green**: #28A745 - Used to indicate successful actions or positive outcomes.
-- **Error Red**: #DC3545 - Used to indicate errors or negative outcomes.
+### Primary Colors
+- **Primary 1**: #28A745 - Green, representing success and growth.
+- **Primary 2**: #0D6EAD - Blue, symbolizing reliability and professionalism.
+- **Primary 3**: #FFCE56 - Yellow-Green, conveying warmth and positivity.
 
-### Usage
-- **Primary Blue**: Emphasize primary actions such as "Create Task," "Delete Task," and navigation links.
-- **Secondary Gray**: Use for background colors, dividers, and less important text elements to maintain a clean layout.
-- **Success Green**: Highlight successful actions like marking a task as completed.
-- **Error Red**: Indicate errors or negative outcomes, such as failed task creation.
+### Secondary Colors
+- **Secondary 1**: #EBEBEB - Light Grey, for backgrounds and minor UI elements.
+- **Secondary 2**: #707070 - Dark Grey, for text and buttons that are less prominent.
 
 ## Typography
 
-### Fonts
-- **Primary Font**: Open Sans - A versatile sans-serif font that is easy to read on screens and in print.
-- **Secondary Font**: Roboto - Used for headings and titles to add a touch of modernity and professionalism.
+### Font Family
+- **Primary Font**: Arial, sans-serif
+- **Header Font**: Open Sans, sans-serif
 
-### Sizes
-- **Heading 1 (H1)**: 2.5rem, Roboto Bold
-- **Heading 2 (H2)**: 2rem, Open Sans SemiBold
-- **Heading 3 (H3)**: 1.75rem, Open Sans SemiBold
-- **Body Text**: 1.25rem, Open Sans Regular
+### Font Sizes
+- **Heading 1 (H1)**: 24px
+- **Heading 2 (H2)**: 20px
+- **Heading 3 (H3)**: 16px
+- **Body Text**: 14px
+- **Caption Text**: 12px
 
-### Usage
-- **Heading 1**: Use for the main title of the app or large sections.
-- **Heading 2 and Heading 3**: Use for section headers and subheadings.
-- **Body Text**: Use for all regular text content, including descriptions and labels.
+### Colors for Text
+- **Primary Text Color**: #333333 (Black)
+- **Secondary Text Color**: #666666 (Dark Grey)
 
 ## Component Styles
 
 ### Buttons
+- **Button Background**: Primary 1 (#28A745)
+- **Button Text Color**: Secondary 1 (#EBEBEB)
+- **Hover State**: Lighten the background by 10%
+- **Active State**: Darken the background by 10%
 
-#### Primary Button
-- **Background Color**: Primary Blue (#007BFF)
-- **Text Color**: White
-- **Border**: None
-- **Hover State**: Lighter shade of primary blue (#0056b3)
+### Forms
+- **Input Field Background**: Secondary 1 (#EBEBEB)
+- **Input Field Border**: Primary 2 (#0D6EAD)
+- **Input Field Text Color**: Primary Text Color (#333333)
+- **Label Color**: Primary Text Color (#333333)
 
-#### Secondary Button
-- **Background Color**: Transparent
-- **Text Color**: Primary Blue (#007BFF)
-- **Border**: 1px solid Primary Blue
-- **Hover State**: Darker shade of primary blue (#004085)
+### Links
+- **Link Color**: Primary 1 (#28A745)
+- **Visited Link Color**: Primary 2 (#0D6EAD)
+- **Hover State**: Underline
 
-### Input Fields
+### Tables
+- **Table Header Background**: Primary 1 (#28A745)
+- **Table Header Text Color**: Secondary 1 (#EBEBEB)
+- **Table Row Background (Odd)**: Secondary 2 (#707070)
+- **Table Row Background (Even)**: White (#FFFFFF)
 
-#### Text Input
-- **Background Color**: White
-- **Border**: 1px solid Secondary Gray (#6C757D)
-- **Text Color**: Black
-- **Placeholder Color**: Secondary Gray (#6C757D)
+### Alerts and Notifications
+- **Success Alert Background**: Primary 1 (#28A745)
+- **Success Alert Text Color**: Secondary 1 (#EBEBEB)
+- **Error Alert Background**: Red (#DC3545)
+- **Error Alert Text Color**: Secondary 1 (#EBEBEB)
 
-#### Submit Button
-- **Background Color**: Primary Blue (#007BFF)
-- **Text Color**: White
-- **Border**: None
-- **Hover State**: Lighter shade of primary blue (#0056b3)
+## Layout and Spacing
 
-### Cards
+### Grid System
+- **Grid Columns**: 12
+- **Gutter Width**: 20px
 
-#### Task Card
-- **Background Color**: White
-- **Border**: 1px solid Secondary Gray (#6C757D)
-- **Padding**: 1rem
-- **Radius**: 8px
+### Margins and Padding
+- **Small Margin (SM)**: 8px
+- **Medium Margin (MD)**: 16px
+- **Large Margin (LG)**: 24px
+- **Padding**: Consistent padding should be used for all UI elements to maintain a balanced look.
 
-### Navigation
+## Responsiveness
 
-#### Sidebar
-- **Background Color**: Primary Blue (#007BFF)
-- **Text Color**: White
-- **Hover State**: Lighter shade of primary blue (#0056b3)
+The application should be designed to be responsive and adapt to different screen sizes, ensuring that the user interface remains usable on both desktop and mobile devices.
 
-## Layout
+## Accessibility
 
-### General Guidelines
-- **Grid System**: Use a grid system for consistent spacing and alignment.
-- **Responsive Design**: Ensure the app is responsive and adapts to different screen sizes.
-- **Consistent Spacing**: Use consistent padding, margin, and spacing between elements.
+The design should adhere to accessibility standards to ensure that the application is usable by people with various disabilities. This includes proper contrast ratios, keyboard navigation, and alternative text for images.
 
-## Navigation
-
-### Sidebar
-- The sidebar should be fixed on the left side of the screen.
-- It should contain links to major sections of the app such as "Tasks," "Settings," and "Profile."
-- The active link should have a different background color or text color to indicate the current section.
-
-### Header
-- The header should be located at the top of the screen.
-- It should contain the app name, user profile picture, and navigation links.
-- Use a dark mode for better visibility on light backgrounds.
-
-## Forms
-
-### Task Form
-- The task form should include fields for task name, description, status, and due date.
-- Use labels above each field for clarity.
-- Provide validation feedback to help users complete the form correctly.
-
-## Error Handling
-
-### Error Messages
-- Display error messages prominently at the top of the screen or in a modal dialog.
-- Use the error red color (#DC3545) for error messages.
-- Provide actionable steps to
+By following these guidelines, we can create a cohesive and user-friendly Call Management System that enhances productivity and provides a positive experience for all users.
