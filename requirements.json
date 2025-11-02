@@ -3,42 +3,52 @@
   "main_features": [
     {
       "name": "Web Scraping Engine",
-      "description": "Scrapes the index of EU funding opportunities, extracts PDF links, and validates URLs."
+      "description": "Scrapes convocatorias from the EU website, validates URLs and links, handles pagination, extracts basic data, and scrapes detailed pages for PDFs."
     },
     {
       "name": "Database Management",
-      "description": "Manages a PostgreSQL database to store call for tenders data."
+      "description": "Manages a PostgreSQL database with tables like 'calls' to store convocatoria details."
+    },
+    {
+      "name": "API Endpoints",
+      "description": "Provides an API for accessing and managing convocatoria data, including endpoints for creating, updating, and retrieving tasks."
     },
     {
       "name": "Dashboard",
-      "description": "Provides an interface to monitor system status, scraping statistics, and analysis results."
+      "description": "Monitors system status, provides statistics on scraping, displays analysis results, and offers direct links to recommended tenders."
     }
   ],
   "technical_stack": [
-    "FastAPI",
-    "SQLAlchemy",
-    "Scrapy",
-    "PostgreSQL",
-    "Docker"
+    "FastAPI for API development",
+    "SQLAlchemy with PostgreSQL for database management",
+    "Scrapy for web scraping",
+    "aiohttp for asynchronous downloads",
+    "BeautifulSoup for HTML parsing",
+    "Docker for containerization"
   ],
   "priority_order": [
     {
       "feature": "Web Scraping Engine",
-      "order": 1
+      "reason": "Foundation for data collection and is critical for the project's success."
     },
     {
       "feature": "Database Management",
-      "order": 2
+      "reason": "Necessary to store and manage the scraped data efficiently."
+    },
+    {
+      "feature": "API Endpoints",
+      "reason": "Enables interaction with the system programmatically, essential for automated processes and integrations."
     },
     {
       "feature": "Dashboard",
-      "order": 3
+      "reason": "Provides a user-friendly interface for monitoring and accessing the system's data."
     }
   ],
   "corrective_actions": [
     {
-      "issue": "Validation Error: cannot import name 'CallCre' from 'app.schemas'",
-      "solution": "Correct the import statement to use the correct class name from the app.schemas module."
+      "issue": "Validation Error in main.py",
+      "description": "Error occurred when trying to import routes from 'app.routers.tasks'. This is likely due to an issue with the task schema or model.",
+      "action": "Check the TaskCreate and TaskUpdate schemas in app/schemas.py for any validation errors. Ensure that the fields match those defined in the database models (app/models.py)."
     }
   ]
 }
