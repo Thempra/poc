@@ -3,48 +3,54 @@
   "main_features": [
     {
       "name": "Web Scraping Engine",
-      "description": "Scrapes the index of EU funding opportunities and extracts detailed data about each call."
+      "description": "Automatically scrapes indices of calls from the EU website, extracts detailed data and PDF links, and updates the database."
     },
     {
       "name": "Database Management",
-      "description": "Manages a PostgreSQL database to store and retrieve convocation data efficiently."
+      "description": "Manages a PostgreSQL database using SQLAlchemy ORM for storing call data with various attributes like funding details, deadlines, etc."
+    },
+    {
+      "name": "Adminer Access",
+      "description": "Provides access to an Adminer instance through Docker, allowing users to manage the PostgreSQL database directly from a web interface."
     },
     {
       "name": "API Endpoints",
-      "description": "Provides RESTful API endpoints for accessing and manipulating convocation data."
+      "description": "Exposes RESTful API endpoints using FastAPI for retrieving and managing call data, including CRUD operations."
     },
     {
-      "name": "Dashboard",
-      "description": "Displays real-time status, scraping statistics, and a list of relevant convocations."
+      "name": "Dashboard UI",
+      "description": "Displays real-time system status, scraping statistics, and a paginated list of calls with detailed information and interactive features."
     }
   ],
   "technical_stack": [
     {
-      "name": "Framework",
-      "details": "FastAPI"
+      "language": "Python",
+      "frameworks": [
+        "FastAPI (for API)",
+        "Scrapy (for web scraping)"
+      ]
     },
     {
-      "name": "Database",
-      "details": "PostgreSQL"
+      "database": "PostgreSQL"
     },
     {
-      "name": "Web Scraping Framework",
-      "details": "Scrapy"
+      "ORM": "SQLAlchemy"
     },
     {
-      "name": "Orchestration",
-      "details": "Docker Compose"
+      "dockerization": "Docker Compose for services"
     }
   ],
   "priority_order": [
     "Database Management",
     "Web Scraping Engine",
     "API Endpoints",
-    "Dashboard"
+    "Dashboard UI",
+    "Adminer Access"
   ],
   "corrective_actions": [
     {
-      "description": "Fix the import error in app/main.py by ensuring all dependencies are correctly installed and referenced."
+      "issue": "NameError: name 'declarative_base' is not defined",
+      "solution": "Ensure that the `Base = declarative_base()` import statement is included in the file where it's referenced."
     }
   ]
 }
