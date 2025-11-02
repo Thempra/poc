@@ -1,119 +1,89 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
-from app.main import app
-from app.database import Base, engine as db_engine
+from sqlalchemy.orm import Session
+from app.main import app, get_db
 
-# Fixture for database setup/teardown
+# Create a fixture to handle database operations
 @pytest.fixture(scope="module")
-def test_db():
-    # Create an in-memory SQLite database for testing
-    test_engine = create_engine("sqlite:///:memory:")
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-    
-    # Create the tables in the in-memory database
-    Base.metadata.create_all(bind=test_engine)
-    
-    yield TestingSessionLocal
-    
-    # Drop all tables after tests are done
-    Base.metadata.drop_all(bind=test_engine)
+def db_session():
+    """Create a new database session for testing"""
+    from app.database import engine, Base
+    Base.metadata.create_all(bind=engine)
+    yield SessionLocal()
+    Base.metadata.drop_all(bind=engine)
 
-# Fixture for TestClient
-@pytest.fixture(scope="module")
-def client(test_db):
-    app.dependency_overrides[get_db] = lambda: test_db()
-    yield TestClient(app)
+# Create a client fixture that will use the test database
+@pytest.fixture
+def client(db_session):
+    """Create a test client for the FastAPI application"""
+    def override_get_db():
+        return db_session
 
-# CRUD operations tests
-def test_create_call(client, test_db):
-    call_data = {
-        "call_id": "test-call-id",
-        "name": "Test Call",
-        "sector": "Test Sector",
-        "description": "This is a test call.",
-        "url": "http://example.com/test-call",
-        "total_funding": 1000.0,
-        "funding_percentage": 50.0,
-        "max_per_company": 200.0,
-        "deadline": "2023-12-31T23:59:59Z",
-        "processing_status": "pending",
-        "analysis_status": "not_analyzed",
-        "relevance_score": 80.0
-    }
-    
-    response = client.post("/calls/", json=call_data)
+    app.dependency_overrides[get_db] = override_get_db
+    with TestClient(app) as client:
+        yield client
+
+# CRUD Operations Tests
+def test_create_task(client: TestClient, db_session):
+    """Test creating a task"""
+    response = client.post("/tasks/", json={"name": "Test Task", "description": "This is a test task"})
     assert response.status_code == 201
-    call_id = response.json()["id"]
-    
-    # Verify the call was created in the database
-    with test_db() as db:
-        query = text("SELECT * FROM calls WHERE id = :id")
-        result = db.execute(query, {"id": call_id}).fetchone()
-        assert result is not None
+    data = response.json()
+    assert data["name"] == "Test Task"
+    assert data["description"] == "This is a test task"
 
-def test_read_call(client):
-    response = client.get("/calls/1")  # Assuming there's a call with id=1 in the database
+def test_read_task(client: TestClient, db_session):
+    """Test reading a task"""
+    # First, create a task to read
+    client.post("/tasks/", json={"name": "Task for Reading", "description": "Read this task"})
+    response = client.get("/tasks/1")
     assert response.status_code == 200
     data = response.json()
-    assert data["id"] == "1"  # Adjust as necessary based on actual test setup
+    assert data["name"] == "Task for Reading"
 
-def test_update_call(client):
-    update_data = {
-        "name": "Updated Call Name"
-    }
-    
-    response = client.put("/calls/1", json=update_data)  # Assuming there's a call with id=1 in the database
+def test_update_task(client: TestClient, db_session):
+    """Test updating a task"""
+    # First, create a task to update
+    client.post("/tasks/", json={"name": "Task for Updating", "description": "Update this task"})
+    response = client.put("/tasks/1", json={"name": "Updated Task Name", "description": "This task has been updated"})
     assert response.status_code == 200
     data = response.json()
-    assert data["id"] == "1" and data["name"] == "Updated Call Name"
+    assert data["name"] == "Updated Task Name"
 
-def test_delete_call(client):
-    response = client.delete("/calls/1")  # Assuming there's a call with id=1 in the database
+def test_delete_task(client: TestClient, db_session):
+    """Test deleting a task"""
+    # First, create a task to delete
+    client.post("/tasks/", json={"name": "Task for Deleting", "description": "Delete this task"})
+    response = client.delete("/tasks/1")
     assert response.status_code == 204
-    
-    # Verify the call was deleted from the database
-    with test_db() as db:
-        query = text("SELECT * FROM calls WHERE id = :id")
-        result = db.execute(query, {"id": "1"}).fetchone()
-        assert result is None
 
-# Authentication tests (if present)
-# def test_auth(client):
-#     # Implement authentication tests
-#     pass
-
-# Error handling tests
-def test_error_404(client):
-    response = client.get("/nonexistent-endpoint")
+# Error Handling Tests
+def test_read_task_not_found(client: TestClient, db_session):
+    """Test reading a non-existent task"""
+    response = client.get("/tasks/999")
     assert response.status_code == 404
-    
-def test_error_400(client):
-    bad_data = {
-        "call_id": None,  # Invalid data to cause a 400 Bad Request
-        # other required fields...
-    }
-    
-    response = client.post("/calls/", json=bad_data)
-    assert response.status_code == 400
 
-# Edge cases and validation tests
-def test_edge_case(client):
-    edge_call_data = {
-        "call_id": "a" * 256,  # Exceeding max length of VARCHAR(255)
-        # other required fields...
-    }
-    
-    response = client.post("/calls/", json=edge_call_data)
+def test_create_task_missing_fields(client: TestClient, db_session):
+    """Test creating a task without required fields"""
+    response = client.post("/tasks/", json={"name": "Missing Description"})
     assert response.status_code == 422
 
-def test_validation(client):
-    invalid_call_data = {
-        "call_id": "test-call-id",
-        "name": None,  # Missing a required field
-        # other required fields...
-    }
-    
-    response = client.post("/calls/", json=invalid_call_data)
-    assert response.status_code == 422
+# Edge Cases and Validation Tests
+def test_read_all_tasks(client: TestClient, db_session):
+    """Test reading all tasks"""
+    # Create multiple tasks to read all of them
+    for i in range(5):
+        client.post("/tasks/", json={"name": f"Task {i}", "description": f"This is task {i}"})
+    response = client.get("/tasks/")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 5
+
+# Authentication Tests (if implemented)
+# def test_authenticate_user(client: TestClient, db_session):
+#     """Test authenticating a user"""
+#     response = client.post("/auth/token", data={"username": "testuser", "password": "testpass"})
+#     assert response.status_code == 200
+#     data = response.json()
+#     assert "access_token" in data
+
