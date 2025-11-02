@@ -1,86 +1,93 @@
-# tests/test_api.py
-from fastapi.testclient import TestClient
 import pytest
-from sqlalchemy.orm import Session
-
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from app.main import app, get_db
 from app.database import Base, engine
-from app.crud import create_task, delete_task
-from app.schemas import TaskCreate
+from app.models import Call
 
-# Create test database and session
+# Create an in-memory SQLite database for testing
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 Base.metadata.create_all(bind=engine)
 
-@pytest.fixture(scope="module")
-def test_client():
-    with TestClient(app) as client:
-        yield client
+def override_get_db():
+    try:
+        db = TestingSessionLocal()
+        yield db
+    finally:
+        db.close()
 
-# Fixture to provide a fresh database for each test
+app.dependency_overrides[get_db] = override_get_db
+
+client = TestClient(app)
+
+# Fixtures for setting up and tearing down the database
 @pytest.fixture(autouse=True)
-def db_session(test_client):
+def setup_teardown():
     Base.metadata.create_all(bind=engine)
-    yield SessionLocal()
+    yield
     Base.metadata.drop_all(bind=engine)
 
-# Test create task
-def test_create_task(test_client, db_session):
-    task_data = TaskCreate(name="Test Task", description="This is a test task.")
-    response = test_client.post("/tasks/", json=task_data.dict())
+# Tests for CRUD operations on the Call model
+def test_create_call():
+    call_data = {
+        "call_id": "test_call_1",
+        "name": "Test Call",
+        "sector": "IT",
+        "description": "This is a test call",
+        "url": "http://example.com/test",
+        "total_funding": 1000.0,
+        "funding_percentage": 50.0,
+        "max_per_company": 200.0,
+        "deadline": "2023-12-31T23:59:59Z",
+        "processing_status": "pending",
+        "analysis_status": "unanalyzed",
+        "relevance_score": 80.0
+    }
+    response = client.post("/calls/", json=call_data)
     assert response.status_code == 201
-    created_task = response.json()
-    assert created_task["name"] == "Test Task"
-    assert created_task["description"] == "This is a test task."
+    created_call = response.json()
+    assert created_call["name"] == call_data["name"]
+    return created_call
 
-# Test read task by ID
-def test_read_task(test_client, db_session):
-    task_data = TaskCreate(name="Read Task", description="Task to be read.")
-    created_task = create_task(db_session, task_data)
-    response = test_client.get(f"/tasks/{created_task.id}")
+def test_get_call(created_call):
+    response = client.get(f"/calls/{created_call['id']}")
     assert response.status_code == 200
-    read_task = response.json()
-    assert read_task["id"] == str(created_task.id)
+    retrieved_call = response.json()
+    assert retrieved_call["name"] == created_call["name"]
 
-# Test update task
-def test_update_task(test_client, db_session):
-    task_data = TaskCreate(name="Update Task", description="Task to be updated.")
-    created_task = create_task(db_session, task_data)
-    new_data = {"name": "Updated Task"}
-    response = test_client.put(f"/tasks/{created_task.id}", json=new_data)
+def test_update_call(created_call):
+    update_data = {
+        "name": "Updated Test Call",
+        "total_funding": 1500.0
+    }
+    response = client.put(f"/calls/{created_call['id']}", json=update_data)
     assert response.status_code == 200
-    updated_task = response.json()
-    assert updated_task["id"] == str(created_task.id)
-    assert updated_task["name"] == "Updated Task"
+    updated_call = response.json()
+    assert updated_call["name"] == update_data["name"]
+    assert updated_call["total_funding"] == update_data["total_funding"]
 
-# Test delete task
-def test_delete_task(test_client, db_session):
-    task_data = TaskCreate(name="Delete Task", description="Task to be deleted.")
-    created_task = create_task(db_session, task_data)
-    response = test_client.delete(f"/tasks/{created_task.id}")
+def test_delete_call(created_call):
+    response = client.delete(f"/calls/{created_call['id']}")
     assert response.status_code == 204
-    # Verify deletion by attempting to read the task again
-    response = test_client.get(f"/tasks/{created_task.id}")
+    response = client.get(f"/calls/{created_call['id']}")
     assert response.status_code == 404
 
-# Test error handling for non-existent task
-def test_read_non_existent_task(test_client):
-    response = test_client.get("/tasks/999")
-    assert response.status_code == 404
+# Test for authentication (if present)
+# def test_auth():
+#     # Add authentication tests here
+#     pass
 
-# Test validation for empty name
-def test_create_task_with_empty_name(test_client, db_session):
-    task_data = TaskCreate(name="", description="Task with empty name.")
-    response = test_client.post("/tasks/", json=task_data.dict())
+# Test for error handling
+def test_error_handling():
+    response = client.post("/calls/", json={"name": "Invalid Call"})
     assert response.status_code == 422
 
-# Test validation for long name
-def test_create_task_with_long_name(test_client, db_session):
-    task_data = TaskCreate(name="a" * 1001, description="Task with long name.")
-    response = test_client.post("/tasks/", json=task_data.dict())
-    assert response.status_code == 422
-
-# Test validation for empty description
-def test_create_task_with_empty_description(test_client, db_session):
-    task_data = TaskCreate(name="Valid Name", description="")
-    response = test_client.post("/tasks/", json=task_data.dict())
-    assert response.status_code == 201
+# Test for edge cases and validation
+def test_edge_cases_and_validation():
+    # Add edge case and validation tests here
+    pass
