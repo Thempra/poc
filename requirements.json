@@ -2,67 +2,47 @@
   "project_name": "Call for Tenders",
   "main_features": [
     {
-      "feature_name": "Web Scraping",
-      "description": "Automated web scraping of EU call for tenders using Scrapy framework."
+      "feature": "Adminer Integration",
+      "description": "Manage PostgreSQL database through a lightweight web interface."
     },
     {
-      "feature_name": "Database Management",
-      "description": "Administration of PostgreSQL database using Adminer tool."
+      "feature": "Web Scraping Engine",
+      "description": "Automatically scrape convocation data from EU's funding opportunities portal."
     },
     {
-      "feature_name": "API Endpoints",
-      "description": "REST API endpoints for accessing and managing call for tenders data."
-    },
-    {
-      "feature_name": "Dashboard",
-      "description": "Modern dashboard for monitoring system status, scraping statistics, and convocatoria results."
+      "feature": "Real-time Dashboard",
+      "description": "Monitor the system status, scraping statistics, and analysis results with a responsive UI."
     }
   ],
   "technical_stack": [
     {
-      "tool_name": "FastAPI",
-      "version": "1.0.0",
-      "description": "Framework for building APIs"
+      "language": "Python",
+      "frameworks": ["FastAPI", "Scrapy"],
+      "databases": ["PostgreSQL"]
     },
     {
-      "tool_name": "Scrapy",
-      "version": "latest",
-      "description": "Framework for web scraping applications."
+      "library": "SQLAlchemy",
+      "description": "ORM for database operations."
     },
     {
-      "tool_name": "PostgreSQL",
-      "version": "latest",
-      "description": "Database system"
+      "library": "aiohttp",
+      "description": "Asynchronous HTTP client/server framework for web scraping."
     },
     {
-      "tool_name": "Adminer",
-      "version": "latest",
-      "description": "Web-based database management tool."
+      "library": "BeautifulSoup",
+      "description": "Library for parsing HTML and XML documents."
     }
   ],
   "priority_order": [
-    {
-      "feature_name": "Web Scraping",
-      "order": 1
-    },
-    {
-      "feature_name": "Database Management",
-      "order": 2
-    },
-    {
-      "feature_name": "API Endpoints",
-      "order": 3
-    },
-    {
-      "feature_name": "Dashboard",
-      "order": 4
-    }
+    "Database Management through Adminer",
+    "Web Scraping Engine for Convocation Data",
+    "Real-time Dashboard Implementation"
   ],
-  "corrective_actions": [
-    {
-      "issue": "IndentationError in main.py",
-      "description": "Expected an indented block after function definition on line 31.",
-      "solution": "Fix indentation error by adding proper indentation to the block of code under the @app.on_event('shutdown') decorator."
+  "corrective_actions": {
+    "missing_imports": {
+      "module": "app.models",
+      "imports": ["ForeignKey"],
+      "action": "Import ForeignKey from sqlalchemy.orm at the top of the models.py file."
     }
-  ]
+  }
 }
