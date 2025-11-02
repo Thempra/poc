@@ -31,6 +31,7 @@ def update_task(db: Session, task_id: int, task: TaskUpdate):
         setattr(db_task, field, value)
     
     db.commit()
+    db.refresh(db_task)
     return db_task
 
 def delete_task(db: Session, task_id: int):
@@ -40,4 +41,3 @@ def delete_task(db: Session, task_id: int):
     
     db.delete(db_task)
     db.commit()
-    return {"message": "Task deleted"}
