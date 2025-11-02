@@ -5,16 +5,25 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from app.database import engine, Base, get_db
 from app.routers import tasks
-from app.schemas import CallCre
+from app.schemas import CallCre  # Import the schema here
 
+# Initialize FastAPI application with metadata from docs
 app = FastAPI(
     title="Call for Tenders API",
-    description="API for managing tenders and convocatorias from the European Union.",
+    description="API for managing and analyzing EU tenders",
     version="1.0.0",
+    contact={
+        "name": "Your Name",
+        "email": "your.email@example.com"
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT"
+    }
 )
 
-# CORS Configuration (permissive for development)
-origins = ["*"]
+# CORS configuration (permissive for development)
+origins = ["http://localhost", "http://localhost:3000"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -23,30 +32,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(tasks.router, prefix="/api")
+# Database initialization (create tables)
+Base.metadata.create_all(bind=engine)
 
+# Import router from app.routers.tasks
+router = tasks.router
+
+# Include the router in the FastAPI application
+app.include_router(router, prefix="/api")
+
+# Health check endpoint
+@app.get("/health", tags=["Health"])
+async def health_check():
+    return {"status": "healthy"}
+
+# Startup/shutdown events for database
 @app.on_event("startup")
-async def startup_event():
-    # Create database tables on startup
-    Base.metadata.create_all(bind=engine)
-
-@app.get("/")
-def read_root(request: Request):
-    return {"message": "Welcome to the Call for Tenders API", "url": request.url}
-
-@app.get("/healthcheck", tags=["System"])
-def health_check(db: Session = Depends(get_db)):
-    try:
-        # Check if we can connect to the database
-        db.execute("SELECT 1")
-        return {"status": "healthy"}
-    except SQLAlchemyError as e:
-        raise HTTPException(status_code=503, detail="Database is not healthy")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    # Perform any cleanup tasks here if needed
+def startup_db():
+    # Perform any database initialization tasks here
     pass
 
-# Include other routers and dependencies as needed
+@app.on_event("shutdown")
+def shutdown_db():
+    # Perform any cleanup tasks here
+    pass
