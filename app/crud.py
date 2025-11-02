@@ -1,27 +1,51 @@
-# app/models.py
-from sqlalchemy import Column, Integer, String, Float, UUID, DateTime, ForeignKey, Text, Boolean, Numeric, PickleType, JSON, LargeBinary, SmallInteger, BigInteger, Binary, Date, Time, Interval, NullType
-from sqlalchemy.dialects.postgresql import JSONB, BYTEA
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-import uuid
+# app/crud.py
+from sqlalchemy.orm import Session
 
-Base = declarative_base()
+from app.models import Call
+from app.schemas import CallCreate, CallUpdate
 
-class Call(Base):
-    __tablename__ = 'calls'
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    call_id = Column(String(255), unique=True, index=True)
-    name = Column(String(500))
-    sector = Column(String(200))
-    description = Column(Text)
-    url = Column(String(1000))
-    total_funding = Column(Float)
-    funding_percentage = Column(Float)
-    max_per_company = Column(Float)
-    deadline = Column(DateTime(timezone=True))
-    processing_status = Column(String(50))
-    analysis_status = Column(String(50))
-    relevance_score = Column(Float)
+def get_call(db: Session, call_id: str):
+    return db.query(Call).filter(Call.call_id == call_id).first()
 
-# Assuming other models and their definitions
+def get_calls(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(Call).offset(skip).limit(limit).all()
+
+def create_call(db: Session, call: CallCreate):
+    fake_hashed_password = call.url + "notreallyhashed"
+    db_task = Call(
+        call_id=call.call_id,
+        name=call.name,
+        sector=call.sector,
+        description=call.description,
+        url=call.url,
+        total_funding=call.total_funding,
+        funding_percentage=call.funding_percentage,
+        max_per_company=call.max_per_company,
+        deadline=call.deadline,
+        processing_status="pending",
+        analysis_status="pending",
+        relevance_score=0.0
+    )
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)
+    return db_task
+
+def update_call(db: Session, call_id: str, call: CallUpdate):
+    db_call = get_call(db=db, call_id=call_id)
+    if not db_call:
+        raise HTTPException(status_code=404, detail="Call not found")
+    update_data = call.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_call, key, value)
+    db.commit()
+    db.refresh(db_call)
+    return db_call
+
+def delete_call(db: Session, call_id: str):
+    db_call = get_call(db=db, call_id=call_id)
+    if not db_call:
+        raise HTTPException(status_code=404, detail="Call not found")
+    db.delete(db_call)
+    db.commit()
+    return {"ok": True}
