@@ -2,42 +2,40 @@
   "project_name": "Call for Tenders",
   "main_features": [
     {
-      "feature": "Web Scraping Engine",
-      "description": "Automated scraping of EU funding opportunities, including detailed data extraction and PDF validation."
+      "name": "Web Scraping Engine",
+      "description": "Scrapes the EU's index of tender opportunities, extracts details, and updates the database with new calls."
     },
     {
-      "feature": "Adminer Database Management",
-      "description": "Access to a lightweight admin tool for managing the PostgreSQL database directly from the browser."
-    },
-    {
-      "feature": "FastAPI API",
-      "description": "RESTful API for monitoring and analyzing tenders, with automatic Swagger UI and ReDoc documentation."
-    },
-    {
-      "feature": "Dashboard Monitoring",
-      "description": "Real-time monitoring dashboard with statistics, notifications, and detailed analysis of tender data."
+      "name": "Dashboard",
+      "description": "Provides a real-time monitoring dashboard for system status, scraping statistics, and tender results with pagination and responsive design."
     }
   ],
   "technical_stack": [
-    "FastAPI",
-    "Scrapy (without Selenium)",
-    "PostgreSQL",
-    "Adminer",
-    "aiohttp",
-    "BeautifulSoup",
-    "JWT Authentication",
-    "Docker Compose"
+    {
+      "name": "Framework",
+      "details": "FastAPI"
+    },
+    {
+      "name": "Database",
+      "details": "PostgreSQL (configured with Adminer)"
+    },
+    {
+      "name": "Scraping Library",
+      "details": "Scrapy, aiohttp, BeautifulSoup"
+    },
+    {
+      "name": "Middleware",
+      "details": "Custom middlewares for handling JavaScript-based applications and retry logic with exponential backoff"
+    }
   ],
   "priority_order": [
-    "Web Scraping Engine",
-    "Dashboard Monitoring",
-    "FastAPI API",
-    "Adminer Database Management"
+    "Web Scraping Engine (highest priority as it populates the database)",
+    "Dashboard (second highest, provides real-time monitoring of scraping and data updates)"
   ],
-  "corrective_actions": [
-    {
-      "error": "Validation Error: ImportError: cannot import name 'CallCreate' from 'app.schemas'",
-      "action": "Ensure that the `CallCreate` and `CallUpdate` classes are correctly defined in the `app/schemas.py` file. Check for typos or missing imports."
+  "corrective_actions": {
+    "ImportError": {
+      "description": "The 'Task' model was not imported correctly in 'app/crud.py'.",
+      "solution": "Ensure that the correct import statement for 'Task' is included at the top of 'app/crud.py', e.g., from app.models import Task."
     }
-  ]
+  }
 }
