@@ -2,42 +2,48 @@
   "project_name": "Call for Tenders",
   "main_features": [
     {
-      "name": "Web Scraping Engine",
-      "description": "Scrapes the EU's index of tenders to extract basic information and detailed PDFs."
+      "feature": "Administración de bases de datos",
+      "description": "Adminer para la gestión de la base de datos PostgreSQL."
     },
     {
-      "name": "Adminer Integration",
-      "description": "Provides a web-based interface for managing the PostgreSQL database of tender calls."
+      "feature": "Web Scraping",
+      "description": "Scraping de convocatorias de la UE utilizando Scrapy y aiohttp."
     },
     {
-      "name": "Dashboard",
-      "description": "Displays real-time system status, scraping statistics, and tender analysis results with pagination and auto-update features."
+      "feature": "API REST",
+      "description": "Interfaz para el monitoreo y análisis de convocatorias."
+    },
+    {
+      "feature": "Dashboard",
+      "description": "Interfaz web para visualizar estado del sistema, estadísticas y resultados."
     }
   ],
   "technical_stack": [
     {
-      "language": "Python",
-      "frameworks": ["FastAPI", "Scrapy"],
-      "databases": ["PostgreSQL"]
+      "technology": "Scrapy",
+      "description": "Framework para el web scraping."
     },
     {
-      "library": "SQLAlchemy",
-      "purpose": "Database ORM"
+      "technology": "FastAPI",
+      "description": "Framework para la construcción de APIs REST."
     },
     {
-      "tool": "Docker Compose",
-      "purpose": "Container orchestration for development environment"
+      "technology": "SQLAlchemy",
+      "description": "ORM para interactuar con bases de datos."
+    },
+    {
+      "technology": "Docker",
+      "description": "Para el despliegue y gestión de contenedores."
     }
   ],
   "priority_order": [
     "Web Scraping Engine",
-    "Adminer Integration",
-    "Dashboard"
+    "API REST",
+    "Dashboard",
+    "Administración de bases de datos"
   ],
-  "corrective_actions": [
-    {
-      "issue": "NameError: name 'declarative_base' is not defined",
-      "solution": "Import declarative_base from SQLAlchemy in the models.py file."
-    }
-  ]
+  "corrective_actions": {
+    "task_crud_module": "Crear el archivo 'app/models.py' con la definición del modelo 'Task'.",
+    "database_url": "Cambiar la URL de la base de datos en 'app/database.py' a una que coincida con la configuración de PostgreSQL."
+  }
 }
