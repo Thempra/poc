@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build: .
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
     volumes:
@@ -11,20 +11,12 @@ services:
     depends_on:
       - db
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
       retries: 3
 
   db:
-    image: postgres:13
-    environment:
-      POSTGRES_DB: sql_app
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    image: sqlite:latest
     volumes:
-      - db_data:/var/lib/postgresql/data
-
-volumes:
-  db_data:
-
+      - ./sql_app.db:/app/sql_app.db
