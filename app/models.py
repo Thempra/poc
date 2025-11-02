@@ -1,59 +1,43 @@
-from sqlalchemy import Column, Integer, String, Text, Float, TIMESTAMP, UUID, ForeignKey, Boolean
+# app/models.py
+from sqlalchemy import Column, Integer, String, Float, Text, UUID, ForeignKey, TIMESTAMP, func
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import relationship, backref
-from datetime import datetime
-from uuid import uuid4
+from sqlalchemy.orm import relationship, declarative_base
 
 Base = declarative_base()
 
 class Call(Base):
     __tablename__ = "calls"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     call_id = Column(String(255), unique=True, index=True)
-    name = Column(String(500), nullable=False)
+    name = Column(String(500))
     sector = Column(String(200))
     description = Column(Text)
     url = Column(String(1000))
     total_funding = Column(Float)
     funding_percentage = Column(Float)
     max_per_company = Column(Float)
-    deadline = Column(TIMESTAMP(timezone=True))
-    processing_status = Column(String(50), nullable=False)
-    analysis_status = Column(String(50), nullable=False)
+    deadline = Column(TIMESTAMP)
+    processing_status = Column(String(50), index=True)
+    analysis_status = Column(String(50), index=True)
     relevance_score = Column(Float)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
-    updated_at = Column(TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(TIMESTAMP, default=func.now())
+    updated_at = Column(TIMESTAMP, default=func.now(), onupdate=func.now())
+
+    # Relationships
+    # Add any relationships here if needed
 
 class Task(Base):
     __tablename__ = "tasks"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    task_type = Column(String(50), nullable=False)
-    data = Column(JSONB)
-    status = Column(String(50), nullable=False)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
-    updated_at = Column(TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-class CallAnalysis(Base):
-    __tablename__ = "call_analyses"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    call_id = Column(UUID(as_uuid=True), ForeignKey("calls.id"), nullable=False)
-    analysis_result = Column(JSONB)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
-    updated_at = Column(TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+    id = Column(Integer, primary_key=True, index=True)
+    task_id = Column(String(255), unique=True, index=True)
+    description = Column(Text)
+    status = Column(String(50), index=True)
+    created_at = Column(TIMESTAMP, default=func.now())
+    updated_at = Column(TIMESTAMP, default=func.now(), onupdate=func.now())
 
-Call.analyses = relationship(
-    "CallAnalysis",
-    backref=backref("call", lazy="joined"),
-    cascade="all, delete-orphan",
-    order_by=CallAnalysis.id
-)
+    # Relationships
+    # Add any relationships here if needed
 
-Task.call = relationship(
-    "Call",
-    backref=backref("tasks", lazy="joined"),
-    foreign_keys=[Task.data["call_id"]],
-    uselist=False,
-)
+# Add more models as per your requirements
