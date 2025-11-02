@@ -1,45 +1,40 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+# app/routers/tasks.py
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
+
+from app.database import get_db
+from app.models import Task
+from app.schemas import TaskCreate, TaskUpdate
 
 router = APIRouter()
 
-@router.get("/tasks", status_code=status.HTTP_200_OK)
-def get_tasks(db: Session = Depends(get_db)):
-    tasks = db.query(Task).all()
-    return {"tasks": tasks}
+@router.get("/tasks/", response_model=list[Task], status_code=status.HTTP_200_OK)
+def read_tasks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    tasks = get_tasks(db, skip=skip, limit=limit)
+    return tasks
 
-@router.post("/tasks", status_code=status.HTTP_201_CREATED)
-def create_task(task_data, db: Session = Depends(get_db)):
-    new_task = Task(**task_data.dict())
-    db.add(new_task)
-    db.commit()
-    db.refresh(new_task)
-    return {"task": new_task}
-
-@router.get("/tasks/{task_id}", status_code=status.HTTP_200_OK)
-def get_task(task_id: int, db: Session = Depends(get_db)):
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if not task:
+@router.get("/tasks/{task_id}", response_model=Task, status_code=status.HTTP_200_OK)
+def read_task(task_id: int, db: Session = Depends(get_db)):
+    task = get_task(db, task_id=task_id)
+    if task is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
-    return {"task": task}
+    return task
 
-@router.put("/tasks/{task_id}", status_code=status.HTTP_200_OK)
-def update_task(task_id: int, task_data, db: Session = Depends(get_db)):
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if not task:
+@router.post("/tasks/", response_model=Task, status_code=status.HTTP_201_CREATED)
+def create_new_task(task: TaskCreate, db: Session = Depends(get_db)):
+    created_task = create_task(db=db, task=task)
+    return created_task
+
+@router.put("/tasks/{task_id}", response_model=Task, status_code=status.HTTP_200_OK)
+def update_task_endpoint(task_id: int, task_update: TaskUpdate, db: Session = Depends(get_db)):
+    updated_task = update_task(db=db, task_id=task_id, task_update=task_update)
+    if updated_task is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
-    
-    for key, value in task_data.dict().items():
-        setattr(task, key, value)
-    db.commit()
-    db.refresh(task)
-    return {"task": task}
+    return updated_task
 
 @router.delete("/tasks/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_task(task_id: int, db: Session = Depends(get_db)):
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if not task:
+def delete_task_endpoint(task_id: int, db: Session = Depends(get_db)):
+    deleted_task = delete_task(db=db, task_id=task_id)
+    if deleted_task is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
-    
-    db.delete(task)
-    db.commit()
+    return {"detail": "Task deleted"}
