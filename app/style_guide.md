@@ -1,89 +1,86 @@
-Sure! Below is a proposed `style_guide.md` file that outlines the UI/UX guidelines for your FastAPI application. This document will help maintain a consistent look and feel across different parts of the application.
+To create a `style_guide.md` file that includes UI/UX guidelines for your Call for Tenders API project, you can follow these steps:
+
+1. **Color Scheme**: Define the primary and secondary colors that will be used throughout the application.
+2. **Typography**: Choose fonts that are easy to read and suitable for both headers and body text.
+3. **Component Styles**: Provide guidelines on how various UI components should look and behave.
+
+Here's an example of what the `style_guide.md` file might look like:
 
 ---
 
 # Style Guide
 
-## Overview
-
-This style guide provides guidelines for the User Interface (UI) and User Experience (UX) of our Call for Tenders API application. Consistency is key to creating an intuitive, user-friendly interface that aligns with our brand's identity.
-
 ## Color Scheme
 
-The primary color scheme for the application is designed to be modern, professional, and inviting. The following colors are recommended:
+- **Primary Colors**:
+  - Blue (`#007BFF`) - Used for brand elements, primary buttons, and links.
+  - Green (`#28A745`) - Used to indicate success and positive actions.
 
-- **Primary Blue**: `#007BFF` - This blue shade will be used for buttons, links, and other interactive elements.
-- **Secondary Gray**: `#6c757d` - This neutral gray will be used for backgrounds, borders, and text to provide contrast without being too harsh.
+- **Secondary Colors**:
+  - Gray (`#6C757D`) - Used for text and background elements that need a neutral tone.
+  - Light Blue (`#ADD8E6`) - Used as a hover state or for secondary action buttons.
 
 ## Typography
 
-To maintain readability and a clean design, the following fonts are recommended:
+- **Font Family**:
+  - Primary Font: `Roboto`, sans-serif
+    - Used for all headings, subheadings, and body text.
+  - Secondary Font: `Open Sans`, sans-serif
+    - Used for captions, footnotes, and other small text elements.
 
-- **Primary Font**: Roboto - A sans-serif font that is easy on the eyes and widely supported.
-  - **Font Family**: Roboto
-  - **Weights**: Regular (400), Bold (700)
+- **Heading Sizes**:
+  - H1: 2.5rem (40px)
+  - H2: 2rem (32px)
+  - H3: 1.75rem (28px)
+  - H4: 1.5rem (24px)
+  - H5: 1.25rem (20px)
+  - H6: 1rem (16px)
+
+- **Body Text**:
+  - Font Size: 1rem (16px)
+  - Line Height: 1.5
 
 ## Component Styles
 
 ### Buttons
 
-Buttons should be used to perform actions, such as submitting a form or creating a new task.
-
 - **Primary Button**:
-  - Background Color: `#007BFF`
+  - Background Color: Blue (`#007BFF`)
   - Text Color: White
-  - Font Weight: Bold
-  - Rounded Corners: 4px
-  - Hover State: Lighten the background color slightly to `#0056b3`
+  - Hover State: Light Blue (`#ADD8E6`)
 
-### Input Fields
+- **Secondary Button**:
+  - Background Color: Gray (`#6C757D`)
+  - Text Color: White
+  - Hover State: Light Gray (`#808080`)
 
-Input fields are used for user input and should be clearly labeled.
+### Forms
 
-- **Background Color**: White
-- **Border Color**: Gray (`#ced4da`)
-- **Text Color**: Black
-- **Border Radius**: 4px
-- **Focus State**: Increase border thickness to `2px` and change border color to `#007BFF`
+- **Input Fields**:
+  - Background Color: White
+  - Border: 1px solid Gray (`#6C757D`)
+  - Font Size: 1rem (16px)
+  - Padding: 0.5rem
+
+- **Labels**:
+  - Font Size: 1rem (16px)
+  - Color: Black
+  - Margin Bottom: 0.25rem
 
 ### Links
 
-Links should be used for navigation or actions that require user interaction.
+- **Unvisited Link**:
+  - Color: Blue (`#007BFF`)
+  - Text Decoration: None
 
-- **Default Text Color**: Blue (`#007BFF`)
-- **Hover State**: Lighten the blue slightly to `#0056b3`
-- **Visited State**: Darken the blue slightly to `#004085`
+- **Visited Link**:
+  - Color: Purple (`#800080`)
+  - Text Decoration: None
 
-### Navigation
-
-Navigation elements should be prominent and easy to access.
-
-- **Background Color**: White
-- **Font Weight**: Regular (400)
-- **Active State**: Change text color to `#007BFF` and add a border below the link
-
-## Layout
-
-### General Guidelines
-
-- **Grid System**: Use a grid system for consistent layout and spacing.
-- **Container Width**: Limit the width of containers to maintain readability on all devices.
-- **Spacing**: Use consistent spacing between elements to create a clean and uncluttered design.
-
-### Responsive Design
-
-The application should be designed with responsiveness in mind, ensuring it looks good and functions well on both desktop and mobile devices.
-
-## Accessibility
-
-Ensure that your design is accessible to users with disabilities. This includes:
-
-- **Color Contrast**: Maintain sufficient contrast between text and background colors.
-- **Keyboard Navigation**: Ensure all interactive elements can be accessed via keyboard.
-- **Screen Reader Compatibility**: Use appropriate HTML tags and attributes for screen reader compatibility.
+- **Hover State**:
+  - Color: Light Blue (`#ADD8E6`)
+  - Text Decoration: Underline
 
 ---
 
-This style guide should serve as a reference for designers and developers working on the Call for Tenders API application. Consistency in UI/UX will help users navigate the application more easily and ensure that all components look and feel cohesive.
-
----
+This style guide provides a basic framework for maintaining consistency and readability in your API's UI/UX. You can expand on this by adding more detailed guidelines as needed.
