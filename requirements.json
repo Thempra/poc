@@ -2,62 +2,51 @@
   "project_name": "Call for Tenders",
   "main_features": [
     {
-      "name": "Web Scraping",
-      "description": "Automated scraping of EU funding opportunities from specified URLs."
+      "feature_name": "Web Scraping Engine",
+      "description": "Automatically scrapes the index of EU funding opportunities, extracts links to PDFs, validates URLs and pagination."
     },
     {
-      "name": "Database Management",
-      "description": "Administration and management of a PostgreSQL database to store scraped data."
+      "feature_name": "Database Management",
+      "description": "Manages a PostgreSQL database with tables for convocations, tasks, and related data."
     },
     {
-      "name": "API Endpoints",
-      "description": "RESTful API providing endpoints for accessing, creating, updating, and deleting tasks."
+      "feature_name": "API Endpoints",
+      "description": "Provides RESTful API endpoints to retrieve and manage convocation data."
     },
     {
-      "name": "Dashboard",
-      "description": "Interactive dashboard displaying system status, scraping statistics, and recent tenders."
+      "feature_name": "Dashboard Monitoring",
+      "description": "Displays a web dashboard with real-time system status, scraping statistics, and task results."
     }
   ],
   "technical_stack": [
     {
-      "framework": "FastAPI",
-      "version": "1.0.0"
+      "technology_name": "Framework",
+      "technologies": ["FastAPI", "Scrapy"]
     },
     {
-      "library": "SQLAlchemy",
-      "purpose": "ORM for database operations"
+      "technology_name": "Database",
+      "technologies": ["PostgreSQL"]
     },
     {
-      "database": "PostgreSQL",
-      "description": "Database management system for storing scraped data and application state."
+      "technology_name": "Web Server",
+      "technologies": ["Docker", "Adminer"]
     },
     {
-      "tool": "Docker",
-      "description": "Containerization of services for development, testing, and production environments."
-    },
-    {
-      "library": "Scrapy",
-      "purpose": "Web scraping framework"
-    },
-    {
-      "library": "aiohttp",
-      "purpose": "Asynchronous HTTP client/server framework"
-    },
-    {
-      "library": "BeautifulSoup",
-      "purpose": "HTML and XML parser for web scraping"
+      "technology_name": "Language",
+      "technologies": ["Python 3.8+"]
     }
   ],
   "priority_order": [
-    "Web Scraping Engine",
     "Database Management",
+    "Web Scraping Engine",
     "API Endpoints",
-    "Dashboard"
+    "Dashboard Monitoring"
   ],
   "corrective_actions": [
     {
-      "issue": "SAWarning: This declarative base already contains a class with the same class name and module name as app.models.Task, and will be replaced in the string-lookup table.",
-      "solution": "Rename the class to avoid conflicts."
+      "issue": "NameError: name 'uuid' is not defined",
+      "description": "Ensure the `uuid` module is imported in the `app/models.py` file where it's used.",
+      "solution": "Add `from uuid import uuid4` at the top of the `app/models.py` file."
     }
   ]
 }
