@@ -2,54 +2,46 @@
   "project_name": "Call for Tenders",
   "main_features": [
     {
-      "feature": "Web Scraping Engine",
-      "description": "Scrapes convocatorias from the EU's funding opportunities portal and updates the database with new calls."
+      "feature_name": "Adminer Access",
+      "description": "Provides a web-based interface to manage the PostgreSQL database used by Call for Tenders."
     },
     {
-      "feature": "Admin Interface",
-      "description": "Provides a web-based interface to manage and monitor the system using Adminer."
+      "feature_name": "Web Scraping Engine",
+      "description": "Automatically scrapes convocatoria data from the EU's funding portal and stores it in a database."
     },
     {
-      "feature": "API Endpoints",
-      "description": "Exposes endpoints for managing tender calls via a REST API, including pagination and filtering."
-    },
-    {
-      "feature": "Dashboard",
-      "description": "Displays real-time status of the system, analytics on scraping results, and convocatoria recommendations."
+      "feature_name": "Dashboard",
+      "description": "Displays real-time system status, scraping statistics, and analysis results with pagination capabilities."
     }
   ],
   "technical_stack": [
     {
-      "technology": "FastAPI",
-      "description": "Framework for building APIs with Python."
+      "technology_name": "FastAPI",
+      "version": "1.0.0",
+      "description": "Framework for building APIs."
     },
     {
-      "technology": "SQLAlchemy",
-      "description": "ORM (Object-Relational Mapping) to interact with the database."
+      "technology_name": "Scrapy",
+      "description": "Library for web scraping and data extraction."
     },
     {
-      "technology": "Scrapy",
-      "description": "Framework used for web scraping tasks."
+      "technology_name": "SQLAlchemy",
+      "description": "ORM for Python, providing a full suite of well-known enterprise-level persistence patterns."
     },
     {
-      "technology": "Adminer",
-      "description": "Web-based database management tool."
-    },
-    {
-      "technology": "PostgreSQL",
-      "description": "Database system for storing and retrieving data."
+      "technology_name": "Docker",
+      "description": "Containerization platform to package applications and their dependencies."
     }
   ],
   "priority_order": [
+    "Adminer Access",
     "Web Scraping Engine",
-    "API Endpoints",
-    "Dashboard",
-    "Admin Interface"
+    "Dashboard"
   ],
   "corrective_actions": [
     {
-      "error": "NameError: name 'Task' is not defined",
-      "action": "Define the 'Task' model in the 'app/models.py' file or import it from an existing module where it's defined."
+      "issue": "Validation Error: NameError: name 'Base' is not defined.",
+      "action": "Ensure that the `Base` variable is properly imported from `app.models` where it is defined."
     }
   ]
 }
