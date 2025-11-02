@@ -1,93 +1,111 @@
-# Style Guide for the Application
+# Style Guide
 
 ## Overview
 
-This document outlines the design guidelines for the user interface and experience (UI/UX) of our application. The goal is to ensure a consistent and intuitive user experience across all parts of the application.
+This document outlines the UI/UX guidelines for our application. The aim is to provide a cohesive look and feel that reflects professionalism, usability, and accessibility while maintaining a modern aesthetic.
 
 ## Color Scheme
 
-### Palette
+### Primary Colors
 
-- **Primary Blue:** `#123456` - Used for main call-to-action buttons, navigation headers, and primary UI elements.
-- **Secondary Gray:** `#808080` - Used for borders, background colors, and less prominent UI elements.
-- **Accent Orange:** `#FFA500` - Used for highlighting important information or actions.
+1. **Primary 1**: #007bff (A shade of blue)
+   - Used for primary actions, links, and accents.
+2. **Primary 2**: #6c757d (Light grey)
+   - Used for secondary text and border colors.
 
-### Usage
+### Secondary Colors
 
-- **Primary Blue:** Use this color to emphasize primary actions or call-to-action buttons. It should be used consistently throughout the application.
-- **Secondary Gray:** This color is used for background colors and borders to provide a neutral contrast that helps elements stand out without overwhelming the user.
-- **Accent Orange:** Use this color to draw attention to important information or actions, such as alert messages or highlighted sections of text.
+1. **Secondary 1**: #ff6347 (Tomato red)
+   - Used for alerts, warnings, or error messages.
+2. **Secondary 2**: #98a0aa (Slate grey)
+   - Used for background colors or less critical text.
+
+### Neutral Colors
+
+1. **White**: #ffffff
+   - Used for backgrounds and light elements.
+2. **Black**: #000000
+   - Used for text and dark elements.
+3. **Grey**: #5c6270 (Medium grey)
+   - Used for less critical background or dividers.
 
 ## Typography
 
-### Fonts
+### Font Families
 
-- **Primary Font:** `Roboto` - A modern sans-serif font that is easy to read and versatile.
-- **Secondary Font:** `Open Sans` - A legible sans-serif font for body text.
+1. **Sans-Serif**: Arial, Helvetica Neue, Helvetica, sans-serif
+   - Default font for all UI elements.
 
-### Sizes
+### Font Sizes
 
-- **Headings:**
-  - H1: 36px
-  - H2: 24px
-  - H3: 20px
-  - H4: 18px
-  - H5: 16px
-  - H6: 14px
+1. **Heading 1 (H1)**: 24px
+   - Used for main section headings.
+2. **Heading 2 (H2)**: 20px
+   - Used for subsection headings.
+3. **Heading 3 (H3)**: 18px
+   - Used for sub-subsection headings.
+4. **Body Text**: 16px
+   - Default font size for all body text.
+5. **Small Text**: 14px
+   - Used for captions, small labels, or less critical text.
 
-- **Body Text:**
-  - Regular: 16px
-  - Small: 14px
+### Line Height
 
-### Usage
-
-- **Headings:** Use headings to organize content and provide a clear hierarchy. Headings should be used sparingly and only when necessary.
-- **Body Text:** Use body text to present information in a readable format. Make sure to use appropriate font sizes and line heights for optimal readability.
+- The default line height should be set to 1.5 (1.5 times the font size) for readability.
 
 ## Component Styles
 
 ### Buttons
 
-#### Primary Button
-- **Background Color:** `#123456`
-- **Text Color:** `#FFFFFF`
-- **Border Radius:** 8px
-- **Padding:** 10px 20px
+1. **Primary Button**:
+   - Background: Primary 1
+   - Text Color: White
+   - Border: None
+   - Hover State: Lighten Primary 1 by 10%
+2. **Secondary Button**:
+   - Background: Secondary 1
+   - Text Color: White
+   - Border: None
+   - Hover State: Darken Secondary 1 by 10%
 
-#### Secondary Button
-- **Background Color:** `#FFFFFF`
-- **Text Color:** `#123456`
-- **Border:** 1px solid `#123456`
-- **Border Radius:** 8px
-- **Padding:** 10px 20px
+### Inputs
 
-#### Accent Button
-- **Background Color:** `#FFA500`
-- **Text Color:** `#FFFFFF`
-- **Border Radius:** 8px
-- **Padding:** 10px 20px
+1. **Text Input**:
+   - Background: White
+   - Border: 1px solid Primary 2
+   - Padding: 8px
+   - Placeholder Text Color: Grey
+2. **Label**:
+   - Font Size: Small Text (14px)
+   - Margin Bottom: 4px
 
-### Cards
+### Tables
 
-- **Background Color:** `#FFFFFF`
-- **Border:** 1px solid `#808080`
-- **Border Radius:** 8px
-- **Padding:** 20px
+1. **Table Header**:
+   - Background: Primary 2
+   - Text Color: White
+   - Border: 1px solid Secondary 2
+2. **Table Row (Odd)**:
+   - Background: Grey
+3. **Table Row (Even)**:
+   - Background: White
+4. **Table Cell**:
+   - Padding: 8px
 
-### Text Input
+### Alerts
 
-- **Font Size:** 16px
-- **Line Height:** 1.5
-- **Padding:** 10px
-- **Border:** 1px solid `#808080`
-- **Border Radius:** 4px
-
-## Responsive Design
-
-The application should be designed to work on various devices, including desktops, tablets, and smartphones. Use media queries and flexible layouts to ensure a consistent user experience across all devices.
+1. **Success Alert**:
+   - Background: Lighten Secondary 1 by 20%
+   - Text Color: Black
+2. **Error Alert**:
+   - Background: Darken Secondary 1 by 20%
+   - Text Color: White
 
 ## Accessibility
 
-Ensure that the application is accessible to users with disabilities. This includes providing alternative text for images, using appropriate color contrast, and ensuring keyboard navigability.
+- Ensure all interactive elements (buttons, links) are keyboard accessible.
+- Use sufficient contrast ratios for text and background colors.
+- Provide alternative text for images.
+- Ensure forms are easily navigable using tab.
 
-By following these guidelines, we can create a cohesive and intuitive user interface that enhances the overall user experience of our application.
+This style guide should be adhered to consistently across the application to maintain a high standard of UI/UX.
