@@ -8,12 +8,17 @@ from app.routers import tasks
 
 app = FastAPI(
     title="Call for Tenders",
-    description="API para el monitoreo y análisis de convocatorias de la Unión Europea",
     version="1.0.0",
+    description="API for monitoring and analyzing Call for Tenders from the European Union."
 )
 
-# CORS configuration (permissive for development)
-origins = ["*"]
+# CORS configuration
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:3000",
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -22,29 +27,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Database initialization (create tables)
+# Database initialization
 Base.metadata.create_all(bind=engine)
-
-# Router imports from app.routers.tasks
-app.include_router(tasks.router, prefix="/api")
 
 @app.on_event("startup")
 async def startup():
-    try:
-        db = next(get_db())
-        # Perform any database initialization tasks here
-    finally:
-        db.close()
+    pass  # Placeholder for database startup logic
 
 @app.on_event("shutdown")
 async def shutdown():
-    try:
-        db = next(get_db())
-        # Perform any cleanup tasks before shutting down the application
-    finally:
-        db.close()
+    pass  # Placeholder for database shutdown logic
 
-# Health check endpoint
-@app.get("/health", status_code=status.HTTP_200_OK)
-def health_check():
-    return {"status": "healthy"}
+@app.get("/")
+async def read_root():
+    return {"message": "Welcome to the Call for Tenders API"}
+
+# Include routers
+app.include_router(tasks.router)
