@@ -1,102 +1,83 @@
 import pytest
-from fastapi import HTTPException
-from sqlalchemy.orm import Session
-from app.database import engine, Base, get_db
-from app.models import Call
-from app.crud import create_call, read_call, update_call, delete_call
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from app.main import app, TaskCreate, TaskUpdate, get_db
 
-@pytest.fixture(scope="module")
-def test_db():
-    Base.metadata.create_all(bind=engine)
-    yield engine
-    Base.metadata.drop_all(bind=engine)
+# Define an in-memory SQLite database for testing
+SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
 
-def test_create_call(test_db):
-    session = Session(bind=test_db)
-    call_data = {
-        "call_id": "test123",
-        "name": "Test Call",
-        "sector": "Technology",
-        "description": "This is a test call for technology projects.",
-        "url": "http://example.com/test-call",
-        "total_funding": 50000.0,
-        "funding_percentage": 20.0,
-        "max_per_company": 10000.0,
-        "deadline": "2024-12-31T23:59:59Z",
-        "processing_status": "Pending",
-        "analysis_status": "Not Started",
-        "relevance_score": 85.0
-    }
-    call = create_call(session, call_data)
-    assert call.call_id == call_data["call_id"]
-    assert call.name == call_data["name"]
-    session.close()
+# Define a simple Task model for testing
+class Task(Base):
+    __tablename__ = "tasks"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    description = Column(String, index=True)
 
-def test_read_call(test_db):
-    session = Session(bind=test_db)
-    call_data = {
-        "call_id": "test123",
-        "name": "Test Call",
-        "sector": "Technology",
-        "description": "This is a test call for technology projects.",
-        "url": "http://example.com/test-call",
-        "total_funding": 50000.0,
-        "funding_percentage": 20.0,
-        "max_per_company": 10000.0,
-        "deadline": "2024-12-31T23:59:59Z",
-        "processing_status": "Pending",
-        "analysis_status": "Not Started",
-        "relevance_score": 85.0
-    }
-    call = create_call(session, call_data)
-    read_call_result = read_call(session, call.id)
-    assert read_call_result.call_id == call_data["call_id"]
-    assert read_call_result.name == call_data["name"]
-    session.close()
+Base.metadata.create_all(bind=engine)
 
-def test_update_call(test_db):
-    session = Session(bind=test_db)
-    call_data = {
-        "call_id": "test123",
-        "name": "Test Call",
-        "sector": "Technology",
-        "description": "This is a test call for technology projects.",
-        "url": "http://example.com/test-call",
-        "total_funding": 50000.0,
-        "funding_percentage": 20.0,
-        "max_per_company": 10000.0,
-        "deadline": "2024-12-31T23:59:59Z",
-        "processing_status": "Pending",
-        "analysis_status": "Not Started",
-        "relevance_score": 85.0
-    }
-    call = create_call(session, call_data)
-    update_data = {
-        "name": "Updated Test Call"
-    }
-    updated_call = update_call(session, call.id, update_data)
-    assert updated_call.name == update_data["name"]
-    session.close()
+def override_get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-def test_delete_call(test_db):
-    session = Session(bind=test_db)
-    call_data = {
-        "call_id": "test123",
-        "name": "Test Call",
-        "sector": "Technology",
-        "description": "This is a test call for technology projects.",
-        "url": "http://example.com/test-call",
-        "total_funding": 50000.0,
-        "funding_percentage": 20.0,
-        "max_per_company": 10000.0,
-        "deadline": "2024-12-31T23:59:59Z",
-        "processing_status": "Pending",
-        "analysis_status": "Not Started",
-        "relevance_score": 85.0
-    }
-    call = create_call(session, call_data)
-    delete_call(session, call.id)
-    with pytest.raises(HTTPException) as e:
-        read_call(session, call.id)
-    assert e.value.status_code == 404
-    session.close()
+app.dependency_overrides[get_db] = override_get_db
+
+client = TestClient(app)
+
+# Fixtures for testing
+@pytest.fixture
+def task_data():
+    return TaskCreate(name="Test Task", description="This is a test task.")
+
+# CRUD tests
+def test_create_task(task_data):
+    response = client.post("/tasks/", json=task_data.dict())
+    assert response.status_code == 201
+    created_task = response.json()
+    assert created_task["name"] == task_data.name
+    assert created_task["description"] == task_data.description
+
+def test_read_tasks():
+    response = client.get("/tasks/")
+    assert response.status_code == 200
+    tasks = response.json()
+    assert len(tasks) > 0
+
+def test_update_task(task_data):
+    # First, create a task to update
+    created_response = client.post("/tasks/", json=task_data.dict())
+    created_task_id = created_response.json()["id"]
+
+    updated_task_data = TaskUpdate(description="Updated description")
+    response = client.put(f"/tasks/{created_task_id}", json=updated_task_data.dict())
+    assert response.status_code == 200
+    updated_task = response.json()
+    assert updated_task["description"] == updated_task_data.description
+
+def test_delete_task(task_data):
+    # First, create a task to delete
+    created_response = client.post("/tasks/", json=task_data.dict())
+    created_task_id = created_response.json()["id"]
+
+    response = client.delete(f"/tasks/{created_task_id}")
+    assert response.status_code == 204
+
+# Error handling tests
+def test_read_nonexistent_task():
+    response = client.get("/tasks/999")
+    assert response.status_code == 404
+
+def test_update_nonexistent_task(task_data):
+    response = client.put("/tasks/999", json=task_data.dict())
+    assert response.status_code == 404
+
+def test_delete_nonexistent_task():
+    response = client.delete("/tasks/999")
+    assert response.status_code == 404
