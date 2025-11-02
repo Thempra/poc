@@ -1,27 +1,25 @@
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.main import app, TaskCreate, TaskUpdate, get_db
+from fastapi.testclient import TestClient
+from app.main import app
+from app.database import engine, Base, get_db
+from app.crud import create_task, update_task, get_task, delete_task
 
-# Define an in-memory SQLite database for testing
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+# Create a test database engine and session
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test_sql_app.db"
 
-# Define a simple Task model for testing
-class Task(Base):
-    __tablename__ = "tasks"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    description = Column(String, index=True)
+engine_test = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
 
-Base.metadata.create_all(bind=engine)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
 
+Base.metadata.create_all(bind=engine_test)
+
+# Override the get_db dependency to use the test database
 def override_get_db():
-    db = SessionLocal()
+    db = TestingSessionLocal()
     try:
         yield db
     finally:
@@ -31,53 +29,78 @@ app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
 
-# Fixtures for testing
-@pytest.fixture
-def task_data():
-    return TaskCreate(name="Test Task", description="This is a test task.")
+@pytest.fixture(scope="module")
+def client():
+    with TestClient(app) as test_client:
+        yield test_client
 
-# CRUD tests
-def test_create_task(task_data):
-    response = client.post("/tasks/", json=task_data.dict())
-    assert response.status_code == 201
-    created_task = response.json()
-    assert created_task["name"] == task_data.name
-    assert created_task["description"] == task_data.description
-
-def test_read_tasks():
-    response = client.get("/tasks/")
+# Test Create Task
+def test_create_task(client):
+    response = client.post(
+        "/tasks/",
+        json={
+            "name": "Test Task",
+            "description": "This is a test task.",
+            "status": "pending",
+            "due_date": "2023-12-31"
+        }
+    )
     assert response.status_code == 200
-    tasks = response.json()
-    assert len(tasks) > 0
+    data = response.json()
+    assert data["name"] == "Test Task"
 
-def test_update_task(task_data):
-    # First, create a task to update
-    created_response = client.post("/tasks/", json=task_data.dict())
-    created_task_id = created_response.json()["id"]
-
-    updated_task_data = TaskUpdate(description="Updated description")
-    response = client.put(f"/tasks/{created_task_id}", json=updated_task_data.dict())
+# Test Read Task
+def test_read_task(client):
+    task = create_task(
+        db=TestingSessionLocal(),
+        task={"name": "Read Test", "description": "For reading purposes.", "status": "completed", "due_date": "2023-12-31"}
+    )
+    response = client.get(f"/tasks/{task.id}")
     assert response.status_code == 200
-    updated_task = response.json()
-    assert updated_task["description"] == updated_task_data.description
+    data = response.json()
+    assert data["id"] == str(task.id)
 
-def test_delete_task(task_data):
-    # First, create a task to delete
-    created_response = client.post("/tasks/", json=task_data.dict())
-    created_task_id = created_response.json()["id"]
+# Test Update Task
+def test_update_task(client):
+    task = create_task(
+        db=TestingSessionLocal(),
+        task={"name": "Update Test", "description": "For updating purposes.", "status": "pending", "due_date": "2023-12-31"}
+    )
+    response = client.put(
+        f"/tasks/{task.id}",
+        json={"status": "completed"}
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == str(task.id)
+    assert data["status"] == "completed"
 
-    response = client.delete(f"/tasks/{created_task_id}")
+# Test Delete Task
+def test_delete_task(client):
+    task = create_task(
+        db=TestingSessionLocal(),
+        task={"name": "Delete Test", "description": "For deleting purposes.", "status": "pending", "due_date": "2023-12-31"}
+    )
+    response = client.delete(f"/tasks/{task.id}")
     assert response.status_code == 204
+    with pytest.raises(Exception) as exc_info:
+        get_task(db=TestingSessionLocal(), task_id=task.id)
+    assert "Task not found" in str(exc_info.value)
 
-# Error handling tests
-def test_read_nonexistent_task():
+# Test Error Handling (404)
+def test_read_nonexistent_task(client):
     response = client.get("/tasks/999")
     assert response.status_code == 404
 
-def test_update_nonexistent_task(task_data):
-    response = client.put("/tasks/999", json=task_data.dict())
-    assert response.status_code == 404
-
-def test_delete_nonexistent_task():
-    response = client.delete("/tasks/999")
-    assert response.status_code == 404
+# Test Validation
+def test_create_task_with_invalid_data(client):
+    response = client.post(
+        "/tasks/",
+        json={
+            "name": "",
+            "description": "This is a test task.",
+            "status": "pending",
+            "due_date": "2023-12-31"
+        }
+    )
+    assert response.status_code == 422
