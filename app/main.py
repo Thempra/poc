@@ -13,10 +13,7 @@ app = FastAPI(
 )
 
 # CORS Configuration
-origins = [
-    "*",
-]
-
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -25,30 +22,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routes from app.routers.tasks
-app.include_router(tasks_router, prefix="/tasks")
-
 # Database Initialization
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+Base.metadata.create_all(bind=engine)
 
-SQLALCHEMY_DATABASE_URL = "postgresql://callfortenders_user:callfortenders_password@postgres/callfortenders"
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+# Routers
+app.include_router(tasks_router)
 
-# Health check endpoint
+# Health Check Endpoint
 @app.get("/health")
-def health():
+async def health_check():
     return {"status": "healthy"}
 
-# Startup and shutdown events for database
+# Startup/Shutdown Events for Database
 @app.on_event("startup")
-async def startup():
-    Base.metadata.create_all(bind=engine)
+def startup_db():
+    engine.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
 
 @app.on_event("shutdown")
-async def shutdown():
+def shutdown_db():
     pass
 
+# Dependency Injection for Database Sessions
+async def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
