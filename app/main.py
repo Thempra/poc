@@ -1,29 +1,19 @@
 # app/main.py
-from fastapi import FastAPI, Depends, HTTPException, status, Security, BackgroundTasks, Request, Response, APIRouter
+from fastapi import FastAPI, Depends, HTTPException, status, Security, BackgroundTasks, Request, Response, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from app.database import engine, Base, get_db
 from app.routers import tasks
-from app.schemas import CallCre  # Import the schema here
 
-# Initialize FastAPI application with metadata from docs
 app = FastAPI(
-    title="Call for Tenders API",
-    description="API for managing and analyzing EU tenders",
+    title="Call for Tenders",
+    description="API para el monitoreo y análisis de convocatorias de la Unión Europea",
     version="1.0.0",
-    contact={
-        "name": "Your Name",
-        "email": "your.email@example.com"
-    },
-    license_info={
-        "name": "MIT License",
-        "url": "https://opensource.org/licenses/MIT"
-    }
 )
 
 # CORS configuration (permissive for development)
-origins = ["http://localhost", "http://localhost:3000"]
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -35,24 +25,26 @@ app.add_middleware(
 # Database initialization (create tables)
 Base.metadata.create_all(bind=engine)
 
-# Import router from app.routers.tasks
-router = tasks.router
+# Router imports from app.routers.tasks
+app.include_router(tasks.router, prefix="/api")
 
-# Include the router in the FastAPI application
-app.include_router(router, prefix="/api")
-
-# Health check endpoint
-@app.get("/health", tags=["Health"])
-async def health_check():
-    return {"status": "healthy"}
-
-# Startup/shutdown events for database
 @app.on_event("startup")
-def startup_db():
-    # Perform any database initialization tasks here
-    pass
+async def startup():
+    try:
+        db = next(get_db())
+        # Perform any database initialization tasks here
+    finally:
+        db.close()
 
 @app.on_event("shutdown")
-def shutdown_db():
-    # Perform any cleanup tasks here
-    pass
+async def shutdown():
+    try:
+        db = next(get_db())
+        # Perform any cleanup tasks before shutting down the application
+    finally:
+        db.close()
+
+# Health check endpoint
+@app.get("/health", status_code=status.HTTP_200_OK)
+def health_check():
+    return {"status": "healthy"}
