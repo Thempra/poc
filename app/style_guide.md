@@ -1,65 +1,90 @@
+Creating a `style_guide.md` file for your project is an important step in ensuring that the user interface (UI) and user experience (UX) are consistent across all components of your application. Below is a template for the `style_guide.md` file. You can customize it according to your specific design requirements.
+
 # Style Guide
 
 ## Overview
-This style guide provides the guidelines for creating a consistent and user-friendly interface for our application. These guidelines aim to ensure that all components are visually appealing, easy to understand, and consistent across the application.
+This style guide outlines the visual and functional guidelines for the Call for Tenders API project. It ensures consistency in appearance, usability, and accessibility across all components of the application.
 
 ## Color Scheme
 
 ### Primary Colors
-- **Primary**: #123456 - A neutral color that serves as the base for the application.
-- **Secondary**: #6789AB - A slightly darker shade used for buttons and other interactive elements.
-- **Accent**: #CDEF00 - A vibrant color used to highlight important actions or draw attention.
+- **Primary 1**: #007BFF (Blue)
+- **Primary 2**: #4CAF50 (Green)
+
+### Secondary Colors
+- **Secondary 1**: #FFC107 (Yellow)
+- **Secondary 2**: #9C27B0 (Purple)
 
 ### Neutral Colors
-- **Background**: #FFFFFF - White, used as the background for most parts of the application.
-- **Text**: #333333 - Dark gray, used for primary text.
-- **Light Text**: #666666 - Lighter gray, used for secondary text and less important elements.
+- **Neutral 1**: #FFFFFF (White)
+- **Neutral 2**: #000000 (Black)
+- **Neutral 3**: #E0E0E0 (Light Gray)
+- **Neutral 4**: #606060 (Dark Gray)
 
-### Error Colors
-- **Error**: #FF0000 - Red, used to indicate errors or issues.
-- **Warning**: #FFFF00 - Yellow, used to indicate warnings.
+### Accent Colors
+- **Accent 1**: #FF5722 (Red)
+- **Accent 2**: #009688 (Teal)
 
 ## Typography
 
 ### Font Family
-- **Primary**: Arial, sans-serif - Used for all main text and headings.
+- **Primary Font**: 'Roboto', sans-serif
+- **Secondary Font**: 'Open Sans', sans-serif
 
 ### Font Sizes
-- **Heading 1 (H1)**: 24px
-- **Heading 2 (H2)**: 20px
-- **Heading 3 (H3)**: 18px
-- **Body Text**: 16px
+- **Heading 1 (H1)**: 36px, bold
+- **Heading 2 (H2)**: 24px, bold
+- **Heading 3 (H3)**: 20px, bold
+- **Body Text**: 16px, normal
 
 ### Line Height
-- **Line Height**: 1.5 - Ensures readability and legibility.
+- **Body Text**: 1.5
 
 ## Component Styles
 
 ### Buttons
-- **Primary Button**: Solid background with primary color, white text.
-- **Secondary Button**: Outline with secondary color, primary text.
-- **Accent Button**: Solid background with accent color, white text.
+- **Primary Button**:
+  - Background Color: Primary 1
+  - Text Color: Neutral 1 (White)
+  - Hover State: Lighten Primary 1 by 10%
+  - Active State: Darken Primary 1 by 10%
+
+- **Secondary Button**:
+  - Background Color: Neutral 3
+  - Text Color: Secondary 1
+  - Hover State: Darken Neutral 3 by 5%
+  - Active State: Lighten Neutral 3 by 5%
+
+### Links
+- **Normal Link**: Underline, Primary 2 (Green)
+- **Visited Link**: Underline, Secondary 2 (Purple)
+- **Hovered Link**: Underline, Accent 1 (Red)
 
 ### Forms
-- **Input Fields**: White background with a light gray border.
-- **Labels**: Dark text above input fields.
-- **Error Messages**: Red text below input fields or in a separate error section.
+- **Input Fields**:
+  - Background Color: Neutral 3
+  - Border Color: Neutral 4
+  - Text Color: Neutral 1 (Black)
+  - Placeholder Text Color: Neutral 2 (Dark Gray)
 
-### Navigation
-- **Main Menu**: Fixed at the top of the page, dark gray background with white text.
-- **Submenu**: Dropdown menu items with primary color background and white text.
+- **Form Labels**:
+  - Font Size: 16px, normal
+  - Text Color: Neutral 1 (Black)
 
-## Layout
+## Accessibility
 
-### Grid System
-- **Grid Rows**: Each row has 12 columns to ensure consistent spacing and alignment across components.
+### Color Contrast
+- Ensure all colors have a contrast ratio of at least 4.5:1 for text and 3:1 for UI elements to meet WCAG guidelines.
 
-### Padding and Margin
-- **Padding**: Consistent padding of 16px for all elements.
-- **Margin**: Minimal margin used between sections and elements.
+### Keyboard Navigation
+- All interactive elements should be accessible via keyboard navigation.
 
-## Responsive Design
-- The application should be responsive, ensuring that it looks good on both desktop and mobile devices.
-- Use media queries to adjust layout and style based on screen size.
+### Screen Reader Compatibility
+- Use semantic HTML and ARIA attributes to improve accessibility for screen readers.
 
-By following these guidelines, we can create a user-friendly and visually appealing interface that is consistent across the entire application.
+## Icons
+
+- Use scalable vector graphics (SVG) for icons to ensure they remain sharp on high-resolution displays.
+- Icons should have a consistent size and style throughout the application.
+
+By following this style guide, we can maintain a cohesive look and feel across all components of the Call for Tenders API project.
