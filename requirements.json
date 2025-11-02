@@ -3,46 +3,44 @@
   "main_features": [
     {
       "feature": "Adminer Integration",
-      "description": "Manage PostgreSQL database through a lightweight web interface."
+      "description": "Adminer web tool for database management of the Call for Tenders PostgreSQL database."
     },
     {
       "feature": "Web Scraping Engine",
-      "description": "Automatically scrape convocation data from EU's funding opportunities portal."
+      "description": "Scrapy-based engine for scraping convocatorias from EU's official portal and storing them in a database."
     },
     {
-      "feature": "Real-time Dashboard",
-      "description": "Monitor the system status, scraping statistics, and analysis results with a responsive UI."
+      "feature": "Dashboard Monitoring",
+      "description": "User-friendly dashboard to monitor system status, scraping statistics, and convocation results with real-time updates."
     }
   ],
   "technical_stack": [
     {
-      "language": "Python",
-      "frameworks": ["FastAPI", "Scrapy"],
-      "databases": ["PostgreSQL"]
+      "technology": "FastAPI",
+      "description": "For building the REST API providing data access."
     },
     {
-      "library": "SQLAlchemy",
-      "description": "ORM for database operations."
+      "technology": "SQLAlchemy",
+      "description": "ORM for database interactions and queries."
     },
     {
-      "library": "aiohttp",
-      "description": "Asynchronous HTTP client/server framework for web scraping."
+      "technology": "Scrapy",
+      "description": "Framework for web scraping operations, with asynchronous downloads using aiohttp."
     },
     {
-      "library": "BeautifulSoup",
-      "description": "Library for parsing HTML and XML documents."
+      "technology": "Adminer",
+      "description": "Web-based SQL administration tool accessible via a browser."
     }
   ],
   "priority_order": [
-    "Database Management through Adminer",
-    "Web Scraping Engine for Convocation Data",
-    "Real-time Dashboard Implementation"
+    "Web Scraping Engine",
+    "API Endpoints",
+    "Dashboard Monitoring"
   ],
-  "corrective_actions": {
-    "missing_imports": {
-      "module": "app.models",
-      "imports": ["ForeignKey"],
-      "action": "Import ForeignKey from sqlalchemy.orm at the top of the models.py file."
+  "corrective_actions": [
+    {
+      "error": "ImportError: cannot import name 'router' from 'app.routers.tasks'",
+      "action": "Ensure that the file `app/routers/tasks.py` contains a definition for the 'router' object, or correct the import statement in `app/main.py` to match the actual object being imported."
     }
-  }
+  ]
 }
