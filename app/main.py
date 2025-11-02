@@ -7,34 +7,51 @@ from sqlalchemy.orm import Session
 app = FastAPI(
     title="Call for Tenders API",
     version="1.0.0",
-    description="API for managing tender calls from the European Union."
+    description="API for managing Call for Tenders data"
 )
 
-# CORS Configuration (permissive for development)
+# CORS configuration (permissive for development)
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Database Initialization
-from app.database import engine, SessionLocal, get_db
-Base.metadata.create_all(bind=engine)
+from app.database import engine, Base
+from sqlalchemy.orm import sessionmaker
 
-# Include router from tasks module
-from app.routers.tasks import router as tasks_router
-app.include_router(tasks_router, prefix="/tasks")
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-@app.get("/")
-async def read_root():
-    return {"message": "Welcome to the Call for Tenders API"}
+Base.metadata.create_all(bind=engine)  # Create tables
 
 @app.on_event("startup")
-def startup():
-    pass
+async def startup():
+    db = SessionLocal()
+    try:
+        db.execute('SELECT 1')
+    except SQLAlchemyError as e:
+        print(f"Failed to connect to the database: {e}")
+    finally:
+        db.close()
 
 @app.on_event("shutdown")
-def shutdown():
-    pass
+async def shutdown():
+    db = SessionLocal()
+    try:
+        db.execute('SELECT 1')
+    except SQLAlchemyError as e:
+        print(f"Failed to connect to the database during shutdown: {e}")
+    finally:
+        db.close()
+
+from app.routers import tasks
+
+app.include_router(tasks.router)
+
+# Health check endpoint
+@app.get("/health", tags=["Health"])
+async def health_check():
+    return {"status": "healthy"}
