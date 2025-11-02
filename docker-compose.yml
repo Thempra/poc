@@ -3,19 +3,19 @@ version: '3.8'
 services:
   api:
     build: .
-    container_name: fastapi_app
     ports:
       - "8000:8000"
     volumes:
       - .:/app
-      - /app/.venv:/app/.venv
-    environment:
-      - ENV=development
-    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0"]
+    depends_on:
+      - db
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8000/health || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s
-      timeout: 3s
+      timeout: 5s
       retries: 3
-      start_period: 40s
 
+  db:
+    image: sqlite:latest
+    volumes:
+      - ./sql_app.db:/app/sql_app.db
