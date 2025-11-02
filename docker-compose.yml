@@ -1,16 +1,13 @@
 version: '3.8'
 
 services:
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  web:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - .:/app
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=sqlite:///./sql_app.db
-    volumes:
-      - ./app:/app
     depends_on:
       - db
     healthcheck:
@@ -20,13 +17,15 @@ services:
       retries: 3
 
   db:
-    image: postgres:latest
-    environment:
-      - POSTGRES_DB=sql_app
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    image: sqlite:3.36.0
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - ./sql_app.db:/app/sql_app.db
+    healthcheck:
+      test: ["CMD", "sqlite3", "/app/sql_app.db", "PRAGMA user_version"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
-volumes:
-  postgres_data:
+networks:
+  default:
+    driver: bridge
