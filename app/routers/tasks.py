@@ -1,46 +1,45 @@
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.models import Task
-from app.schemas import TaskCreate, TaskUpdate
 
-def get_task(db: Session, task_id: int):
-    return db.query(Task).filter(Task.id == task_id).first()
+router = APIRouter()
 
-def get_tasks(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Task).offset(skip).limit(limit).all()
+@router.get("/tasks", status_code=status.HTTP_200_OK)
+def get_tasks(db: Session = Depends(get_db)):
+    tasks = db.query(Task).all()
+    return {"tasks": tasks}
 
-def create_task(db: Session, task: TaskCreate):
-    db_task = Task(**task.dict())
-    try:
-        db.add(db_task)
-        db.commit()
-        db.refresh(db_task)
-        return db_task
-    except SQLAlchemyError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@router.post("/tasks", status_code=status.HTTP_201_CREATED)
+def create_task(task_data, db: Session = Depends(get_db)):
+    new_task = Task(**task_data.dict())
+    db.add(new_task)
+    db.commit()
+    db.refresh(new_task)
+    return {"task": new_task}
 
-def update_task(db: Session, task_id: int, task: TaskUpdate):
-    db_task = get_task(db, task_id)
-    if not db_task:
-        raise HTTPException(status_code=404, detail="Task not found")
+@router.get("/tasks/{task_id}", status_code=status.HTTP_200_OK)
+def get_task(task_id: int, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+    return {"task": task}
+
+@router.put("/tasks/{task_id}", status_code=status.HTTP_200_OK)
+def update_task(task_id: int, task_data, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
     
-    for key, value in task.dict(exclude_unset=True).items():
-        setattr(db_task, key, value)
-    
-    try:
-        db.commit()
-        db.refresh(db_task)
-        return db_task
-    except SQLAlchemyError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    for key, value in task_data.dict().items():
+        setattr(task, key, value)
+    db.commit()
+    db.refresh(task)
+    return {"task": task}
 
-def delete_task(db: Session, task_id: int):
-    db_task = get_task(db, task_id)
-    if not db_task:
-        raise HTTPException(status_code=404, detail="Task not found")
+@router.delete("/tasks/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_task(task_id: int, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
     
-    try:
-        db.delete(db_task)
-        db.commit()
-        return {"message": "Task deleted"}
-    except SQLAlchemyError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    db.delete(task)
+    db.commit()
