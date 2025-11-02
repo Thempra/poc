@@ -1,21 +1,27 @@
+Dockerfile
 # Use an official Python runtime as a parent image
 FROM python:3.9-slim
 
-# Set the working directory in the container
-WORKDIR /app
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Copy the current directory contents into the container at /app
-COPY . .
-
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Create a non-root user and switch to it
-RUN useradd -m appuser && chown -R appuser:appuser /app
+# Create the non-root user and switch to it
+RUN useradd -ms /bin/bash appuser
 USER appuser
 
-# Expose the port the app runs on
+# Working directory
+WORKDIR /app
+
+# Copy project files
+COPY . /app
+
+# Install dependencies
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose port
 EXPOSE 8000
 
-# Command to run the application
+# Run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
