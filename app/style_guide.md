@@ -1,113 +1,93 @@
-# Style Guide for CaTask App
+# Style Guide for the Application
 
-## Introduction
+## Overview
 
-This style guide provides the visual and design standards to maintain a consistent look and feel across all components of the CaTask application. It includes guidelines on color scheme, typography, and component styles.
+This document outlines the design guidelines for the user interface and experience (UI/UX) of our application. The goal is to ensure a consistent and intuitive user experience across all parts of the application.
 
 ## Color Scheme
 
-The primary color for the CaTask app is **#2196F3**, which is a shade of blue commonly associated with trust and reliability. This will be used in navigation bars, buttons, and other interactive elements.
+### Palette
 
-### Secondary Colors
+- **Primary Blue:** `#123456` - Used for main call-to-action buttons, navigation headers, and primary UI elements.
+- **Secondary Gray:** `#808080` - Used for borders, background colors, and less prominent UI elements.
+- **Accent Orange:** `#FFA500` - Used for highlighting important information or actions.
 
-- **#FFFFFF** (White): Used for background colors and text on dark backgrounds.
-- **#4CAF50** (Green): Used to indicate success or approval.
-- **#FF5722** (Red): Used to indicate errors or warnings.
-- **#9E9E9E** (Gray): Used for borders, dividers, and less important text.
+### Usage
+
+- **Primary Blue:** Use this color to emphasize primary actions or call-to-action buttons. It should be used consistently throughout the application.
+- **Secondary Gray:** This color is used for background colors and borders to provide a neutral contrast that helps elements stand out without overwhelming the user.
+- **Accent Orange:** Use this color to draw attention to important information or actions, such as alert messages or highlighted sections of text.
 
 ## Typography
 
-The primary font used throughout the application is **Roboto**, a popular open-source sans-serif font. It offers a clean and modern look while remaining easy to read on various devices.
+### Fonts
 
-### Font Sizes
+- **Primary Font:** `Roboto` - A modern sans-serif font that is easy to read and versatile.
+- **Secondary Font:** `Open Sans` - A legible sans-serif font for body text.
 
-- **Headings**: 
-  - H1: 24px
-  - H2: 20px
-  - H3: 18px
-  - H4: 16px
-  - H5: 14px
-  - H6: 12px
+### Sizes
 
-- **Body Text**: 16px
+- **Headings:**
+  - H1: 36px
+  - H2: 24px
+  - H3: 20px
+  - H4: 18px
+  - H5: 16px
+  - H6: 14px
 
-### Line Height
+- **Body Text:**
+  - Regular: 16px
+  - Small: 14px
 
-Line height should be at least 1.5 times the font size for readability.
+### Usage
+
+- **Headings:** Use headings to organize content and provide a clear hierarchy. Headings should be used sparingly and only when necessary.
+- **Body Text:** Use body text to present information in a readable format. Make sure to use appropriate font sizes and line heights for optimal readability.
 
 ## Component Styles
 
 ### Buttons
 
-Buttons are essential elements in user interfaces and should follow these guidelines:
+#### Primary Button
+- **Background Color:** `#123456`
+- **Text Color:** `#FFFFFF`
+- **Border Radius:** 8px
+- **Padding:** 10px 20px
 
-- **Primary Button**:
-  - Background Color: #2196F3
-  - Text Color: #FFFFFF
-  - Border: None
-  - Font Size: 16px
-  - Padding: 8px 16px
+#### Secondary Button
+- **Background Color:** `#FFFFFF`
+- **Text Color:** `#123456`
+- **Border:** 1px solid `#123456`
+- **Border Radius:** 8px
+- **Padding:** 10px 20px
 
-- **Secondary Button**:
-  - Background Color: #FFFFFF (with a subtle border of #9E9E9E)
-  - Text Color: #2196F3
-  - Border: 1px solid #9E9E9E
-  - Font Size: 16px
-  - Padding: 8px 16px
-
-- **Danger Button**:
-  - Background Color: #FF5722 (with a subtle border of #FF5722)
-  - Text Color: #FFFFFF
-  - Border: None
-  - Font Size: 16px
-  - Padding: 8px 16px
+#### Accent Button
+- **Background Color:** `#FFA500`
+- **Text Color:** `#FFFFFF`
+- **Border Radius:** 8px
+- **Padding:** 10px 20px
 
 ### Cards
 
-Cards are used to group related content and provide a visual separation from other elements:
+- **Background Color:** `#FFFFFF`
+- **Border:** 1px solid `#808080`
+- **Border Radius:** 8px
+- **Padding:** 20px
 
-- **Background Color**: #FFFFFF
-- **Border**: 1px solid #9E9E9E
-- **Padding**: 16px
-- **Box Shadow**: None (optional, can be added for a subtle effect)
+### Text Input
 
-### Input Fields
-
-Input fields are used to capture user input and should follow these guidelines:
-
-- **Background Color**: #FFFFFF
-- **Border**: 1px solid #9E9E9E
-- **Padding**: 8px
-- **Font Size**: 16px
-- **Text Color**: #2196F3
-
-## Layout
-
-### Navigation Bar
-
-The navigation bar should be located at the top of the page and contain links to different sections of the application:
-
-- **Background Color**: #2196F3
-- **Font Size**: 18px
-- **Text Color**: #FFFFFF
-- **Padding**: 16px
-
-### Footer
-
-The footer should be located at the bottom of the page and contain information such as copyright details and links to support resources:
-
-- **Background Color**: #2196F3
-- **Font Size**: 14px
-- **Text Color**: #FFFFFF
-- **Padding**: 16px
+- **Font Size:** 16px
+- **Line Height:** 1.5
+- **Padding:** 10px
+- **Border:** 1px solid `#808080`
+- **Border Radius:** 4px
 
 ## Responsive Design
 
-The application should be designed to be responsive, ensuring it looks good on both desktop and mobile devices. Key points:
+The application should be designed to work on various devices, including desktops, tablets, and smartphones. Use media queries and flexible layouts to ensure a consistent user experience across all devices.
 
-- Use relative units (e.g., `em`, `rem`) for sizing.
-- Implement media queries to adjust layout and styling based on screen size.
+## Accessibility
 
----
+Ensure that the application is accessible to users with disabilities. This includes providing alternative text for images, using appropriate color contrast, and ensuring keyboard navigability.
 
-By following these guidelines, the CaTask app will maintain a consistent and professional appearance while providing an intuitive and user-friendly interface.
+By following these guidelines, we can create a cohesive and intuitive user interface that enhances the overall user experience of our application.
