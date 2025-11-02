@@ -1,97 +1,86 @@
 # tests/test_api.py
-import pytest
-from fastapi import status
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
-from app.main import app
+import pytest
+from sqlalchemy.orm import Session
+
+from app.main import app, get_db
 from app.database import Base, engine
+from app.crud import create_task, delete_task
+from app.schemas import TaskCreate
 
-# Create test database URL
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test_sql_app.db"
-
-engine_test = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
-
-Base.metadata.create_all(bind=engine_test)
-
-client = TestClient(app)
+# Create test database and session
+Base.metadata.create_all(bind=engine)
 
 @pytest.fixture(scope="module")
-def test_db():
-    Base.metadata.drop_all(bind=engine_test)
-    Base.metadata.create_all(bind=engine_test)
-    yield TestingSessionLocal()
-    Base.metadata.drop_all(bind=engine_test)
+def test_client():
+    with TestClient(app) as client:
+        yield client
 
-# CRUD Operations
+# Fixture to provide a fresh database for each test
+@pytest.fixture(autouse=True)
+def db_session(test_client):
+    Base.metadata.create_all(bind=engine)
+    yield SessionLocal()
+    Base.metadata.drop_all(bind=engine)
 
-def test_create_call(test_db):
-    response = client.post(
-        "/calls/",
-        json={
-            "call_id": "test_rss",
-            "name": "Test Call",
-            "sector": "IT",
-            "description": "This is a test call.",
-            "url": "http://example.com/test",
-            "total_funding": 1000.0,
-            "funding_percentage": 50.0,
-            "max_per_company": 200.0,
-            "deadline": "2023-12-31T23:59:59Z",
-            "processing_status": "Pending",
-            "analysis_status": "Not Started",
-            "relevance_score": 8.5
-        }
-    )
-    assert response.status_code == status.HTTP_201_CREATED
-    data = response.json()
-    assert data["id"]
-    call_id = data["call_id"]
+# Test create task
+def test_create_task(test_client, db_session):
+    task_data = TaskCreate(name="Test Task", description="This is a test task.")
+    response = test_client.post("/tasks/", json=task_data.dict())
+    assert response.status_code == 201
+    created_task = response.json()
+    assert created_task["name"] == "Test Task"
+    assert created_task["description"] == "This is a test task."
 
-    # Verify creation in database
-    with test_db() as session:
-        call = session.execute(text("SELECT * FROM calls WHERE call_id = :call_id"), {"call_id": call_id}).fetchone()
-        assert call
+# Test read task by ID
+def test_read_task(test_client, db_session):
+    task_data = TaskCreate(name="Read Task", description="Task to be read.")
+    created_task = create_task(db_session, task_data)
+    response = test_client.get(f"/tasks/{created_task.id}")
+    assert response.status_code == 200
+    read_task = response.json()
+    assert read_task["id"] == str(created_task.id)
 
-def test_read_call(test_db):
-    response = client.get("/calls/test_rss")
-    assert response.status_code == status.HTTP_200_OK
-    data = response.json()
-    assert data["call_id"] == "test_rss"
+# Test update task
+def test_update_task(test_client, db_session):
+    task_data = TaskCreate(name="Update Task", description="Task to be updated.")
+    created_task = create_task(db_session, task_data)
+    new_data = {"name": "Updated Task"}
+    response = test_client.put(f"/tasks/{created_task.id}", json=new_data)
+    assert response.status_code == 200
+    updated_task = response.json()
+    assert updated_task["id"] == str(created_task.id)
+    assert updated_task["name"] == "Updated Task"
 
-def test_update_call(test_db):
-    response = client.put(
-        "/calls/test_rss",
-        json={
-            "name": "Updated Test Call"
-        }
-    )
-    assert response.status_code == status.HTTP_200_OK
-    data = response.json()
-    assert data["name"] == "Updated Test Call"
+# Test delete task
+def test_delete_task(test_client, db_session):
+    task_data = TaskCreate(name="Delete Task", description="Task to be deleted.")
+    created_task = create_task(db_session, task_data)
+    response = test_client.delete(f"/tasks/{created_task.id}")
+    assert response.status_code == 204
+    # Verify deletion by attempting to read the task again
+    response = test_client.get(f"/tasks/{created_task.id}")
+    assert response.status_code == 404
 
-def test_delete_call(test_db):
-    response = client.delete("/calls/test_rss")
-    assert response.status_code == status.HTTP_204_NO_CONTENT
+# Test error handling for non-existent task
+def test_read_non_existent_task(test_client):
+    response = test_client.get("/tasks/999")
+    assert response.status_code == 404
 
-# Authentication and Error Handling (assuming JWT is implemented)
+# Test validation for empty name
+def test_create_task_with_empty_name(test_client, db_session):
+    task_data = TaskCreate(name="", description="Task with empty name.")
+    response = test_client.post("/tasks/", json=task_data.dict())
+    assert response.status_code == 422
 
-@pytest.mark.skip(reason="JWT authentication not implemented")
-def test_authenticate_user():
-    # Implement this test once JWT authentication is added
-    pass
+# Test validation for long name
+def test_create_task_with_long_name(test_client, db_session):
+    task_data = TaskCreate(name="a" * 1001, description="Task with long name.")
+    response = test_client.post("/tasks/", json=task_data.dict())
+    assert response.status_code == 422
 
-# Edge Cases and Validation
-
-def test_create_call_with_missing_field(test_db):
-    response = client.post(
-        "/calls/",
-        json={
-            "name": "Test Call",
-            "sector": "IT"
-        }
-    )
-    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+# Test validation for empty description
+def test_create_task_with_empty_description(test_client, db_session):
+    task_data = TaskCreate(name="Valid Name", description="")
+    response = test_client.post("/tasks/", json=task_data.dict())
+    assert response.status_code == 201
