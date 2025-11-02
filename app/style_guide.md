@@ -1,88 +1,89 @@
-# Style Guide for Call for Tenders API
+Sure! Below is a proposed `style_guide.md` file that outlines the UI/UX guidelines for your FastAPI application. This document will help maintain a consistent look and feel across different parts of the application.
 
-## Introduction
-This style guide provides the visual and stylistic guidelines for the user interface and user experience (UI/UX) of the Call for Tenders API. It includes recommendations on color scheme, typography, and component styles to ensure a consistent and professional appearance across all parts of the application.
+---
+
+# Style Guide
+
+## Overview
+
+This style guide provides guidelines for the User Interface (UI) and User Experience (UX) of our Call for Tenders API application. Consistency is key to creating an intuitive, user-friendly interface that aligns with our brand's identity.
 
 ## Color Scheme
 
-### Primary Colors
-- **Primary Blue:** #1E90FF - A deep blue used as the main brand color.
-- **Secondary Green:** #5cb85c - A green used for positive actions or successful outcomes.
-- **Error Red:** #ff4d4f - A red used to indicate errors or issues.
+The primary color scheme for the application is designed to be modern, professional, and inviting. The following colors are recommended:
 
-### Neutral Colors
-- **White:** #ffffff - The background color.
-- **Gray 1:** #e0e0e0 - Light gray used for dividers and background elements.
-- **Gray 2:** #808080 - Darker gray used for text and borders.
+- **Primary Blue**: `#007BFF` - This blue shade will be used for buttons, links, and other interactive elements.
+- **Secondary Gray**: `#6c757d` - This neutral gray will be used for backgrounds, borders, and text to provide contrast without being too harsh.
 
 ## Typography
 
-### Font Family
-- **Primary Font:** Roboto - A modern sans-serif font chosen for its readability across various screen sizes and platforms.
+To maintain readability and a clean design, the following fonts are recommended:
 
-### Text Sizes
-- **Heading (H1):** 36px, bold
-- **Subheading (H2):** 24px, semi-bold
-- **Body Text (P):** 16px, normal
-
-### Color
-- **Text Color:** #333333 - A dark gray used for all text.
+- **Primary Font**: Roboto - A sans-serif font that is easy on the eyes and widely supported.
+  - **Font Family**: Roboto
+  - **Weights**: Regular (400), Bold (700)
 
 ## Component Styles
 
 ### Buttons
 
-#### Primary Button
-- **Background Color:** Primary Blue (#1E90FF)
-- **Text Color:** White
-- **Border:** None
-- **Hover State:** Lighten the primary blue by 10%
+Buttons should be used to perform actions, such as submitting a form or creating a new task.
 
-#### Secondary Button
-- **Background Color:** Transparent
-- **Text Color:** Primary Blue (#1E90FF)
-- **Border:** 1px solid Primary Blue
-- **Hover State:** Darken the border and text color by 10%
+- **Primary Button**:
+  - Background Color: `#007BFF`
+  - Text Color: White
+  - Font Weight: Bold
+  - Rounded Corners: 4px
+  - Hover State: Lighten the background color slightly to `#0056b3`
 
-### Text Input
+### Input Fields
 
-- **Background Color:** White
-- **Border:** 1px solid Gray 2 (#808080)
-- **Text Color:** #333333
-- **Placeholder Text Color:** Gray 1 (#e0e0e0)
+Input fields are used for user input and should be clearly labeled.
 
-#### Error State
-- **Border:** 1px solid Error Red (#ff4d4f)
-
-### Form Labels
-
-- **Font Size:** 14px, normal
-- **Color:** Gray 2 (#808080)
+- **Background Color**: White
+- **Border Color**: Gray (`#ced4da`)
+- **Text Color**: Black
+- **Border Radius**: 4px
+- **Focus State**: Increase border thickness to `2px` and change border color to `#007BFF`
 
 ### Links
 
-- **Text Color:** Primary Blue (#1E90FF)
-- **Hover State:** Lighten the primary blue by 10%
+Links should be used for navigation or actions that require user interaction.
+
+- **Default Text Color**: Blue (`#007BFF`)
+- **Hover State**: Lighten the blue slightly to `#0056b3`
+- **Visited State**: Darken the blue slightly to `#004085`
+
+### Navigation
+
+Navigation elements should be prominent and easy to access.
+
+- **Background Color**: White
+- **Font Weight**: Regular (400)
+- **Active State**: Change text color to `#007BFF` and add a border below the link
 
 ## Layout
 
-### Spacing
-- **Vertical Padding (p-y):** 16px
-- **Horizontal Padding (p-x):** 24px
-- **Grid System:** Based on 12 columns for responsive design.
+### General Guidelines
+
+- **Grid System**: Use a grid system for consistent layout and spacing.
+- **Container Width**: Limit the width of containers to maintain readability on all devices.
+- **Spacing**: Use consistent spacing between elements to create a clean and uncluttered design.
 
 ### Responsive Design
-- The application should be designed to be mobile-friendly, with a fluid grid system and flexible layouts.
-- Key elements like buttons and form fields should scale appropriately across different devices.
 
-## Icons
-
-- Use modern, high-quality icons from sources like Font Awesome or Material Icons.
-- Ensure icons are used consistently throughout the application for a cohesive look.
+The application should be designed with responsiveness in mind, ensuring it looks good and functions well on both desktop and mobile devices.
 
 ## Accessibility
 
-- All UI elements should be accessible to users with disabilities.
-- Follow WCAG (Web Content Accessibility Guidelines) standards for color contrast and text size.
+Ensure that your design is accessible to users with disabilities. This includes:
 
-By following this style guide, we can ensure that the Call for Tenders API has a clean, professional, and user-friendly interface.
+- **Color Contrast**: Maintain sufficient contrast between text and background colors.
+- **Keyboard Navigation**: Ensure all interactive elements can be accessed via keyboard.
+- **Screen Reader Compatibility**: Use appropriate HTML tags and attributes for screen reader compatibility.
+
+---
+
+This style guide should serve as a reference for designers and developers working on the Call for Tenders API application. Consistency in UI/UX will help users navigate the application more easily and ensure that all components look and feel cohesive.
+
+---
