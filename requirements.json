@@ -2,50 +2,62 @@
   "project_name": "Call for Tenders",
   "main_features": [
     {
-      "name": "Web Scraping Engine",
-      "description": "Automatically scrapes convocatoria data from the EU's website and updates the database with new records."
+      "name": "Web Scraping",
+      "description": "Automated scraping of EU funding opportunities from specified URLs."
+    },
+    {
+      "name": "Database Management",
+      "description": "Administration and management of a PostgreSQL database to store scraped data."
+    },
+    {
+      "name": "API Endpoints",
+      "description": "RESTful API providing endpoints for accessing, creating, updating, and deleting tasks."
     },
     {
       "name": "Dashboard",
-      "description": "Provides real-time monitoring of the system, statistics on scraping activities, and detailed results for tenders."
+      "description": "Interactive dashboard displaying system status, scraping statistics, and recent tenders."
     }
   ],
   "technical_stack": [
     {
-      "name": "Framework",
-      "value": "FastAPI"
+      "framework": "FastAPI",
+      "version": "1.0.0"
     },
     {
-      "name": "Database",
-      "value": "PostgreSQL"
+      "library": "SQLAlchemy",
+      "purpose": "ORM for database operations"
     },
     {
-      "name": "Scraping Library",
-      "value": "Scrapy"
+      "database": "PostgreSQL",
+      "description": "Database management system for storing scraped data and application state."
     },
     {
-      "name": "Asynchronous I/O",
-      "value": "aiohttp"
+      "tool": "Docker",
+      "description": "Containerization of services for development, testing, and production environments."
     },
     {
-      "name": "HTML Parsing",
-      "value": "BeautifulSoup"
+      "library": "Scrapy",
+      "purpose": "Web scraping framework"
     },
     {
-      "name": "Authentication",
-      "value": "JWT (pending implementation)"
+      "library": "aiohttp",
+      "purpose": "Asynchronous HTTP client/server framework"
+    },
+    {
+      "library": "BeautifulSoup",
+      "purpose": "HTML and XML parser for web scraping"
     }
   ],
   "priority_order": [
     "Web Scraping Engine",
-    "Dashboard",
+    "Database Management",
     "API Endpoints",
-    "Error Handling"
+    "Dashboard"
   ],
   "corrective_actions": [
     {
-      "description": "Correct the validation error in `app/main.py` by ensuring that all required dependencies are correctly imported and used.",
-      "status": "Pending"
+      "issue": "SAWarning: This declarative base already contains a class with the same class name and module name as app.models.Task, and will be replaced in the string-lookup table.",
+      "solution": "Rename the class to avoid conflicts."
     }
   ]
 }
