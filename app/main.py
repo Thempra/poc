@@ -8,15 +8,17 @@ from app.routers.tasks import router as tasks_router
 
 app = FastAPI(
     title="Call for Tenders API",
-    description="FastAPI application for managing Call for Tenders data",
-    version="1.0.0"
+    description="FastAPI application to manage call for tenders data.",
+    version="1.0.0",
+    openapi_url="/openapi.json",
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
 # CORS Configuration
-origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -25,25 +27,18 @@ app.add_middleware(
 # Database Initialization
 Base.metadata.create_all(bind=engine)
 
-# Include routers
-app.include_router(tasks_router, prefix="/tasks", tags=["tasks"])
-
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the Call for Tenders API"}
-
 @app.on_event("startup")
 async def startup():
-    # Perform any startup tasks here (e.g., database migrations)
-    pass
+    # Perform any necessary database setup or migrations here
 
 @app.on_event("shutdown")
 async def shutdown():
-    # Perform any shutdown tasks here
-    pass
+    # Clean up resources if needed
 
-# Health check endpoint
-@app.get("/health", tags=["system"])
-def health_check():
+# Include router for tasks
+app.include_router(tasks_router, prefix="/tasks", tags=["Tasks"])
+
+# Health Check Endpoint
+@app.get("/health", status_code=status.HTTP_200_OK)
+async def health_check():
     return {"status": "healthy"}
-
