@@ -2,48 +2,43 @@
   "project_name": "Call for Tenders",
   "main_features": [
     {
-      "feature": "Administración de bases de datos",
-      "description": "Adminer para la gestión de la base de datos PostgreSQL."
+      "name": "Web Scraping Engine",
+      "description": "Scrapes the index of EU funding opportunities, extracts PDF links, and validates URLs."
     },
     {
-      "feature": "Web Scraping",
-      "description": "Scraping de convocatorias de la UE utilizando Scrapy y aiohttp."
+      "name": "Database Management",
+      "description": "Manages a PostgreSQL database to store call for tenders data."
     },
     {
-      "feature": "API REST",
-      "description": "Interfaz para el monitoreo y análisis de convocatorias."
-    },
-    {
-      "feature": "Dashboard",
-      "description": "Interfaz web para visualizar estado del sistema, estadísticas y resultados."
+      "name": "Dashboard",
+      "description": "Provides an interface to monitor system status, scraping statistics, and analysis results."
     }
   ],
   "technical_stack": [
-    {
-      "technology": "Scrapy",
-      "description": "Framework para el web scraping."
-    },
-    {
-      "technology": "FastAPI",
-      "description": "Framework para la construcción de APIs REST."
-    },
-    {
-      "technology": "SQLAlchemy",
-      "description": "ORM para interactuar con bases de datos."
-    },
-    {
-      "technology": "Docker",
-      "description": "Para el despliegue y gestión de contenedores."
-    }
+    "FastAPI",
+    "SQLAlchemy",
+    "Scrapy",
+    "PostgreSQL",
+    "Docker"
   ],
   "priority_order": [
-    "Web Scraping Engine",
-    "API REST",
-    "Dashboard",
-    "Administración de bases de datos"
+    {
+      "feature": "Web Scraping Engine",
+      "order": 1
+    },
+    {
+      "feature": "Database Management",
+      "order": 2
+    },
+    {
+      "feature": "Dashboard",
+      "order": 3
+    }
   ],
-  "corrective_actions": {
-    "task_crud_module": "Crear el archivo 'app/models.py' con la definición del modelo 'Task'.",
-    "database_url": "Cambiar la URL de la base de datos en 'app/database.py' a una que coincida con la configuración de PostgreSQL."
-  }
+  "corrective_actions": [
+    {
+      "issue": "Validation Error: cannot import name 'CallCre' from 'app.schemas'",
+      "solution": "Correct the import statement to use the correct class name from the app.schemas module."
+    }
+  ]
 }
