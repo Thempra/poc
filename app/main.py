@@ -33,21 +33,18 @@ Base.metadata.create_all(bind=engine)
 # Include routers
 app.include_router(tasks_router)
 
-@app.get("/")
-async def read_root():
-    return {"message": "Welcome to the Call for Tenders API"}
-
-@app.on_event("startup")
-async def startup():
-    # Perform any database setup or migration here if needed
-    pass
-
-@app.on_event("shutdown")
-async def shutdown():
-    # Close database connection and perform cleanup if necessary
-    SessionLocal.close()
-
 # Health check endpoint
 @app.get("/health")
-async def health_check():
+def health_check():
     return {"status": "healthy"}
+
+# Startup/shutdown events for database
+@app.on_event("startup")
+async def startup_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+@app.on_event("shutdown")
+async def shutdown_db():
+    async with engine.begin() as conn:
+        await conn.close()
