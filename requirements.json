@@ -3,44 +3,38 @@
   "main_features": [
     {
       "name": "Web Scraping Engine",
-      "description": "Scrapes the index of EU funding opportunities and extracts details from individual pages."
+      "description": "Scrapes the EU's index of calls for proposals, extracts details, and validates URLs."
     },
     {
       "name": "Database Management",
-      "description": "Manages a PostgreSQL database with a 'calls' table for storing convocatoria data."
+      "description": "Manages a PostgreSQL database to store call data and handles CRUD operations."
+    },
+    {
+      "name": "API Endpoint for Retrieval",
+      "description": "Provides an API endpoint to retrieve call data in JSON format."
     },
     {
       "name": "Dashboard",
-      "description": "Provides a web interface to monitor the status of the system, scraping statistics, and analysis results."
+      "description": "Displays real-time system status, scraping statistics, and analyzed call results with pagination."
     }
   ],
   "technical_stack": [
-    {
-      "name": "Framework",
-      "value": "FastAPI"
-    },
-    {
-      "name": "Database",
-      "value": "PostgreSQL"
-    },
-    {
-      "name": "Web Scraping",
-      "value": "Scrapy"
-    },
-    {
-      "name": "ORM",
-      "value": "SQLAlchemy"
-    }
+    "FastAPI",
+    "SQLAlchemy",
+    "Scrapy",
+    "PostgreSQL",
+    "Docker"
   ],
   "priority_order": [
     "Database Management",
     "Web Scraping Engine",
-    "Dashboard"
+    "Dashboard",
+    "API Endpoint for Retrieval"
   ],
   "corrective_actions": [
     {
-      "error": "Validation Error: NameError: name 'get_db' is not defined",
-      "action": "Ensure that the `get_db` function is properly imported or defined in the file where it is needed."
+      "error_description": "Validation Error: ImportError: cannot import name 'CallCreate' from 'app.schemas'",
+      "action": "Ensure that the `schemas.py` file exists and contains the correct definitions for `CallCreate` and `CallUpdate`. Verify imports in `tasks.py`."
     }
   ]
 }
