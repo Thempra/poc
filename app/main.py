@@ -1,5 +1,5 @@
 # app/main.py
-from fastapi import FastAPI, Depends, HTTPException, status, Security, BackgroundTasks, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Security, BackgroundTasks, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
@@ -25,27 +25,25 @@ app.add_middleware(
 # Database Initialization
 Base.metadata.create_all(bind=engine)
 
-# Routers
-app.include_router(tasks_router)
+# Include routers
+app.include_router(tasks_router, prefix="/tasks", tags=["tasks"])
 
-# Health Check Endpoint
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Call for Tenders API"}
 
-# Startup/Shutdown Events for Database
 @app.on_event("startup")
-def startup_db():
-    engine.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
-
-@app.on_event("shutdown")
-def shutdown_db():
+async def startup():
+    # Perform any startup tasks here (e.g., database migrations)
     pass
 
-# Dependency Injection for Database Sessions
-async def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+@app.on_event("shutdown")
+async def shutdown():
+    # Perform any shutdown tasks here
+    pass
+
+# Health check endpoint
+@app.get("/health", tags=["system"])
+def health_check():
+    return {"status": "healthy"}
+
