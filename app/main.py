@@ -1,4 +1,4 @@
-# app/__init__.py
+# app/main.py
 from fastapi import FastAPI, Depends, HTTPException, status, Security, BackgroundTasks, Request, Response, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
@@ -7,11 +7,23 @@ from sqlalchemy.orm import Session
 app = FastAPI(
     title="Call for Tenders API",
     version="1.0.0",
-    description="API for managing Call for Tenders data"
+    description="API for managing calls for tenders.",
+    terms_of_service="http://example.com/terms/",
+    contact={
+        "name": "John Doe",
+        "url": "https://john.doe.dev",
+        "email": "johndoe@example.com",
+    },
+    license_info={
+        "name": "Apache 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+    },
 )
 
-# CORS configuration (permissive for development)
-origins = ["*"]
+origins = [
+    "*"
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -20,38 +32,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from app.database import engine, Base
-from sqlalchemy.orm import sessionmaker
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base.metadata.create_all(bind=engine)  # Create tables
-
-@app.on_event("startup")
-async def startup():
-    db = SessionLocal()
-    try:
-        db.execute('SELECT 1')
-    except SQLAlchemyError as e:
-        print(f"Failed to connect to the database: {e}")
-    finally:
-        db.close()
-
-@app.on_event("shutdown")
-async def shutdown():
-    db = SessionLocal()
-    try:
-        db.execute('SELECT 1')
-    except SQLAlchemyError as e:
-        print(f"Failed to connect to the database during shutdown: {e}")
-    finally:
-        db.close()
-
+from app.database import Base, engine
 from app.routers import tasks
 
-app.include_router(tasks.router)
+Base.metadata.create_all(bind=engine)
 
-# Health check endpoint
-@app.get("/health", tags=["Health"])
-async def health_check():
-    return {"status": "healthy"}
+@app.get("/")
+async def read_root():
+    return {"message": "Welcome to Call for Tenders API"}
+
+app.include_router(tasks.router)
